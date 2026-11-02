@@ -6,7 +6,11 @@
 #include <functional>
 #include <optional>
 #include "Input.hpp"
-#include "Dingus.hpp"
+
+#define ACTION_WHILE_HELD 0
+#define ACTION_ON_PRESS 1
+#define ACTION_ON_RELEASE 2
+#define ACTION_NOT_HELD 3
 
 namespace ENG
 {
@@ -37,13 +41,58 @@ namespace ENG
                     }
                 }
             }
-            for (auto f : _functions)
+            if (_state)
+            {
+                if (_flag_onPress)
+                {
+                    _flag_onPress = false;
+                    for (auto f : _functions_true)
+                    {
+                        f();
+                    }
+                }
+                for (auto f : _functions_while)
+                {
+                    f();
+                }
+            }
+            else
+            {
+                _flag_onPress = true;
+            }
+            for (auto f : _functions_passKeyState)
             {
                 f(_state);
             }
+            if (!_state)
+            {
+                if (_flag_onRelease)
+                {
+                    _flag_onRelease = false;
+                    for (auto f : _functions_false)
+                    {
+                        f();
+                    }
+                }
+                for (auto f : _functions_not)
+                {
+                    f();
+                }
+            }
+            else
+            {
+                _flag_onRelease = true;
+            }
         }
 
-        std::vector<std::function<void(bool)>> _functions;
+        bool _flag_onPress = true;
+        bool _flag_onRelease = true;
+
+        std::vector<std::function<void(bool)>> _functions_passKeyState;
+        std::vector<std::function<void()>> _functions_while;
+        std::vector<std::function<void()>> _functions_not;
+        std::vector<std::function<void()>> _functions_true;
+        std::vector<std::function<void()>> _functions_false;
 
         struct InputType
         {
@@ -74,31 +123,77 @@ namespace ENG
         }
         Action(std::function<void(bool)> f)
         {
-            _functions.push_back(f);
+            AssignFunction(f);
             _instances.push_back(this);
         }
         Action(std::function<void(bool)> f, SDL_Scancode key)
         {
             InputType newInput(key);
             _inputs.push_back(newInput);
-            _functions.push_back(f);
+            AssignFunction(f);
             _instances.push_back(this);
         }
         Action(std::function<void(bool)> f, Uint8 button)
         {
             InputType newInput(button);
             _inputs.push_back(button);
-            _functions.push_back(f);
+            AssignFunction(f);
+            _instances.push_back(this);
+        }
+        Action(std::function<void()> f, int flag = ACTION_WHILE_HELD)
+        {
+            AssignFunction(f, flag);
+            _instances.push_back(this);
+        }
+        Action(std::function<void()> f, SDL_Scancode key, int flag = ACTION_WHILE_HELD)
+        {
+            InputType newInput(key);
+            _inputs.push_back(newInput);
+            AssignFunction(f, flag);
+            _instances.push_back(this);
+        }
+        Action(std::function<void()> f, Uint8 button, int flag = ACTION_WHILE_HELD)
+        {
+            InputType newInput(button);
+            _inputs.push_back(button);
+            AssignFunction(f, flag);
             _instances.push_back(this);
         }
 
+        void AssignFunction(std::function<void()> f, int flag = ACTION_WHILE_HELD)
+        {
+            switch (flag)
+            {
+            case ACTION_WHILE_HELD:
+                _functions_while.push_back(f);
+                break;
+            case ACTION_ON_PRESS:
+                _functions_true.push_back(f);
+                break;
+            case ACTION_ON_RELEASE:
+                _functions_false.push_back(f);
+                break;
+            case ACTION_NOT_HELD:
+                _functions_not.push_back(f);
+                break;
+
+            default:
+                break;
+            }
+        }
         void AssignFunction(std::function<void(bool)> f)
         {
-            _functions.push_back(f);
+            _functions_passKeyState.push_back(f);
         }
-        void AssignKey(SDL_Scancode sc)
+        void AssignKey(SDL_Scancode key)
         {
-            _inputs.push_back(sc);
+            InputType newInput(key);
+            _inputs.push_back(newInput);
+        }
+        void AssignKey(Uint8 button)
+        {
+            InputType newInput(button);
+            _inputs.push_back(newInput);
         }
 
         bool GetState()

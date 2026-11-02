@@ -21,7 +21,7 @@ ENG::Font font = ENG::Font("assets/fonts/Retro.Gaming.Extended.ttf", 32);
 
 ENG::Timer timer;
 
-void WhenBallClicked(bool actionState, ENG::Dingus *me)
+void WhenBallClicked(ENG::Dingus *me)
 {
     if (me->GetName() == "ball")
     {
@@ -55,9 +55,9 @@ void MouseRight(bool buttonState)
 {
 }
 
-void MoveUp(bool keyState)
+void MoveUp()
 {
-    if (keyState)
+    //if (keyState)
         camera.position.y += 200.0 / camera.zoom * timer.delta;
 }
 void MoveDown(bool keyState)
@@ -90,7 +90,7 @@ ENG::Action zoomIn = ENG::Action(ZoomIn, SDL_SCANCODE_UP);
 ENG::Action zoomOut = ENG::Action(ZoomOut, SDL_SCANCODE_DOWN);
 ENG::Action moveRight = ENG::Action(MoveRight, SDL_SCANCODE_D);
 ENG::Action moveLeft = ENG::Action(MoveLeft, SDL_SCANCODE_A);
-ENG::Action moveUp = ENG::Action(MoveUp, SDL_SCANCODE_W);
+ENG::Action moveUp = ENG::Action(MoveUp, SDL_SCANCODE_W, ACTION_WHILE_HELD);
 ENG::Action moveDown = ENG::Action(MoveDown, SDL_SCANCODE_S);
 
 ENG::Action mouseLeft = ENG::Action(MouseLeft, SDL_BUTTON_LEFT);
@@ -115,7 +115,7 @@ int main()
         ENG::Dingus *ball = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(0, 1280 * i, chud.GetSize() * ENG::Vector2<int>(1, 1)));
         ball->AssignCollisionShape(ENG::CollisionShape::Box(chud.GetSize() * ENG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
         ball->SetName("ball");
-        // ball->AssignFunction_MouseClickR(WhenBallClicked);
+        ball->AssignAction(WhenBallClicked, SDL_BUTTON_RIGHT, ACTION_ON_PRESS);
     }
 
     double value;

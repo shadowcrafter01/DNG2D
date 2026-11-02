@@ -43,13 +43,80 @@ namespace ENG
             {
                 DrawTools::DrawTexture(_camera, _texture, _transform.position, _transform.size, _transform.angle, _color);
             }
-            bool hover = _transform.ContainsPoint(Input::Mouse::GetMouseWorldPos(_camera));
 
-            if (_action != nullptr)
+            bool hover = _transform.ContainsPoint(Input::Mouse::GetMouseWorldPos(_camera));
+            if (hover)
             {
-                _action->SetActive(hover);
+                _HandleInputEvents();
             }
+
             Update();
+        }
+
+        void _HandleInputEvents()
+        {
+            _state = false;
+            for (auto in : _inputs)
+            {
+                if (in.isMouseInput)
+                {
+                    if (Input::Mouse::GetButtonSet().count(in.button) > 0)
+                    {
+                        _state = true;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (Input::Keyboard::GetKeySet().count(in.key) > 0)
+                    {
+                        _state = true;
+                        break;
+                    }
+                }
+            }
+            if (_state)
+            {
+                if (_flag_onPress)
+                {
+                    _flag_onPress = false;
+                    for (auto f : _functions_true)
+                    {
+                        f(this);
+                    }
+                }
+                for (auto f : _functions_while)
+                {
+                    f(this);
+                }
+            }
+            else
+            {
+                _flag_onPress = true;
+            }
+            for (auto f : _functions_passKeyState)
+            {
+                f(this, _state);
+            }
+            if (!_state)
+            {
+                if (_flag_onRelease)
+                {
+                    _flag_onRelease = false;
+                    for (auto f : _functions_false)
+                    {
+                        f(this);
+                    }
+                }
+                for (auto f : _functions_not)
+                {
+                    f(this);
+                }
+            }
+            else
+            {
+                _flag_onRelease = true;
+            }
         }
 
         inline static size_t _zeroIndex = 0;
@@ -77,6 +144,24 @@ namespace ENG
                              });
         }
 
+        struct InputType
+        {
+            InputType(SDL_Scancode keyboardKey)
+            {
+                isMouseInput = false;
+                key = keyboardKey;
+            }
+            InputType(Uint8 mouseButton)
+            {
+                isMouseInput = true;
+                button = mouseButton;
+            }
+            bool isMouseInput;
+            SDL_Scancode key;
+            Uint8 button;
+        };
+        std::vector<InputType> _inputs;
+
         b2BodyId _bodyID;
         static inline b2WorldDef _worldDef = b2DefaultWorldDef();
         static inline b2WorldId _worldID = b2CreateWorld(&_worldDef);
@@ -90,7 +175,14 @@ namespace ENG
         float _renderLayer = 0;
         const char *_name = "dingus";
 
-        Action *_action = nullptr;
+        std::vector<std::function<void(Dingus *, bool)>> _functions_passKeyState;
+        std::vector<std::function<void(Dingus *)>> _functions_while;
+        std::vector<std::function<void(Dingus *)>> _functions_not;
+        std::vector<std::function<void(Dingus *)>> _functions_true;
+        std::vector<std::function<void(Dingus *)>> _functions_false;
+        bool _flag_onPress = true;
+        bool _flag_onRelease = true;
+        bool _state = false;
 
         bool _active = true;
         bool _physicsActive = false;
@@ -204,6 +296,12 @@ namespace ENG
         }
 
         // assign functions
+
+        /// @brief Defines collision shape and enables collision for this dingus
+        /// @param collider Collision shape
+        /// @param density Physics weight density
+        /// @param friction Sliding friction coefficient
+        /// @param restitution "Bounciness"
         Dingus *AssignCollisionShape(CollisionShape collider, float density = 1.0f, float friction = 0.25f, float restitution = 0.1f)
         {
             if (this == nullptr)
@@ -285,6 +383,8 @@ namespace ENG
 
             return this;
         }
+        /// @brief Gives a rendered texture to this dingus, without a camera this will render in screen space (top left origin, position is window size)
+        /// @param tex Pointer reference to a texture object
         Dingus *AssignTexture(Texture *tex)
         {
             if (this == nullptr)
@@ -294,6 +394,8 @@ namespace ENG
             _texture = tex;
             return this;
         }
+        /// @brief Assigns a camera to this dingus's position transforms, position will be defined relative to this camera with or without a texture
+        /// @param cam Camera object reference
         Dingus *AssignCamera(Camera *cam)
         {
             if (this == nullptr)
@@ -303,7 +405,101 @@ namespace ENG
             _camera = cam;
             return this;
         }
+        Dingus *AssignAction(std::function<void(Dingus *, bool)> f, SDL_Scancode key)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            AssignKey(key);
+            AssignFunction(f);
+            return this;
+        }
+        Dingus *AssignAction(std::function<void(Dingus *, bool)> f, Uint8 button)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            AssignKey(button);
+            AssignFunction(f);
+            return this;
+        }
+        Dingus *AssignAction(std::function<void(Dingus *)> f, SDL_Scancode key, int flag = ACTION_WHILE_HELD)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            AssignKey(key);
+            AssignFunction(f, flag);
+            return this;
+        }
+        Dingus *AssignAction(std::function<void(Dingus *)> f, Uint8 button, int flag = ACTION_WHILE_HELD)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            AssignKey(button);
+            AssignFunction(f, flag);
+            return this;
+        }
+        Dingus *AssignFunction(std::function<void(Dingus *)> f, int flag = ACTION_WHILE_HELD)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            switch (flag)
+            {
+            case ACTION_WHILE_HELD:
+                _functions_while.push_back(f);
+                break;
+            case ACTION_ON_PRESS:
+                _functions_true.push_back(f);
+                break;
+            case ACTION_ON_RELEASE:
+                _functions_false.push_back(f);
+                break;
+            case ACTION_NOT_HELD:
+                _functions_not.push_back(f);
+                break;
 
+            default:
+                break;
+            }
+            return this;
+        }
+        Dingus *AssignFunction(std::function<void(Dingus *, bool)> f)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            _functions_passKeyState.push_back(f);
+            return this;
+        }
+        Dingus *AssignKey(SDL_Scancode key)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            InputType newInput(key);
+            _inputs.push_back(newInput);
+            return this;
+        }
+        Dingus *AssignKey(Uint8 button)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            InputType newInput(button);
+            _inputs.push_back(newInput);
+            return this;
+        }
 
         // get functions
         Transform2<float> GetTransform()
