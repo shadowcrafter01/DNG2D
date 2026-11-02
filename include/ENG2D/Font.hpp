@@ -15,6 +15,11 @@ namespace ENG
     private:
         static inline bool flag_ttfInit = false;
 
+        TTF_Font *font;
+        std::string path;
+        int point;
+        bool state = false;
+
     public:
         Font(std::string path, int point) : path{path},
                                             point{point}
@@ -46,10 +51,24 @@ namespace ENG
             TTF_SetTextColor(textOut, 255, 255, 255, SDL_ALPHA_OPAQUE);
             return textOut;
         }
-        TTF_Font *font;
-        std::string path;
-        int point;
-        bool state = false;
+        
+        TTF_Font *GetFont()
+        {
+            return font;
+        }
+        std::string GetPath()
+        {
+            return path;
+        }
+        int GetPoint()
+        {
+            return point;
+        }
+        bool GetState()
+        {
+            return state;
+        }
+
     };
 
 };

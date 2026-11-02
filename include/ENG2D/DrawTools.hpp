@@ -24,22 +24,22 @@ namespace ENG
             Vector2<float> out = vector;
 
             // offset by camera pos
-            out.x -= camera->position.x;
-            out.y -= camera->position.y;
+            out.x -= camera->GetPosition().x;
+            out.y -= camera->GetPosition().y;
 
             // scale by zoom
-            if (camera->zoom != 1)
-                out *= camera->zoom;
+            if (camera->GetZoom() != 1)
+                out *= camera->GetZoom();
 
             // rotate by camera angle
-            out.Rotate(-camera->angle);
+            out.Rotate(-camera->GetAngle());
 
             // flip y axis
             out.y = -out.y;
 
             // center on window
-            out.x += camera->window->GetCenter().x / camera->window->GetRenderer().scale.x;
-            out.y += camera->window->GetCenter().y / camera->window->GetRenderer().scale.y;
+            out.x += camera->GetWindow()->GetCenter().x / camera->GetWindow()->GetRenderer().scale.x;
+            out.y += camera->GetWindow()->GetCenter().y / camera->GetWindow()->GetRenderer().scale.y;
 
             // scale by renderer scale
             // if (camera->window->renderer.scale != Vector2<int>(1,1)) out /= camera->window->renderer.scale;
@@ -50,7 +50,7 @@ namespace ENG
         {
             float size = std::max(rect->w, rect->h);
 
-            if (rect->x + size < 0 || rect->y + size < 0 || rect->x - size > camera->window->GetSize().x || rect->y - size > camera->window->GetSize().y)
+            if (rect->x + size < 0 || rect->y + size < 0 || rect->x - size > camera->GetWindow()->GetSize().x || rect->y - size > camera->GetWindow()->GetSize().y)
             {
                 return false;
             }
@@ -63,8 +63,8 @@ namespace ENG
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.w = size * camera->zoom * texture->GetSize().x * scale.x;
-            r.h = size * camera->zoom * texture->GetSize().y * scale.y;
+            r.w = size * camera->GetZoom() * texture->GetSize().x * scale.x;
+            r.h = size * camera->GetZoom() * texture->GetSize().y * scale.y;
             r.x = pos.x - (r.w / 2);
             r.y = pos.y - (r.h / 2);
 
@@ -74,7 +74,7 @@ namespace ENG
                 SDL_SetTextureBlendMode(texture->GetPointer(), SDL_BLENDMODE_BLEND);
                 SDL_SetTextureColorMod(texture->GetPointer(), color.red, color.green, color.blue);
                 SDL_SetTextureAlphaMod(texture->GetPointer(), color.alpha);
-                SDL_RenderTextureRotated(texture->GetWindow()->GetRenderer(), texture->GetPointer(), NULL, &r, angle + camera->angle, NULL, SDL_FLIP_NONE);
+                SDL_RenderTextureRotated(texture->GetWindow()->GetRenderer(), texture->GetPointer(), NULL, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
                 // SDL_DestroyTexture(texture->pointer);
             }
         }
@@ -83,8 +83,8 @@ namespace ENG
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.w = size.x * camera->zoom; // * texture->size.x;
-            r.h = size.y * camera->zoom; // * texture->size.y;
+            r.w = size.x * camera->GetZoom(); // * texture->size.x;
+            r.h = size.y * camera->GetZoom(); // * texture->size.y;
             r.x = pos.x - (r.w / 2);
             r.y = pos.y - (r.h / 2);
 
@@ -94,7 +94,7 @@ namespace ENG
                 SDL_SetTextureBlendMode(texture->GetPointer(), SDL_BLENDMODE_BLEND);
                 SDL_SetTextureColorMod(texture->GetPointer(), color.red, color.green, color.blue);
                 SDL_SetTextureAlphaMod(texture->GetPointer(), color.alpha);
-                SDL_RenderTextureRotated(texture->GetWindow()->GetRenderer(), texture->GetPointer(), NULL, &r, angle + camera->angle, NULL, SDL_FLIP_NONE);
+                SDL_RenderTextureRotated(texture->GetWindow()->GetRenderer(), texture->GetPointer(), NULL, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
                 // SDL_DestroyTexture(texture->pointer);
             }
         }
@@ -133,8 +133,8 @@ namespace ENG
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.h = size * camera->zoom * atlas->GetTexture()->GetSize().x;
-            r.w = size * camera->zoom * atlas->GetTexture()->GetSize().x;
+            r.h = size * camera->GetZoom() * atlas->GetTexture()->GetSize().x;
+            r.w = size * camera->GetZoom() * atlas->GetTexture()->GetSize().x;
             r.x = pos.x - (r.w / 2);
             r.y = pos.y - (r.h / 2);
             Vector2<float> vr(r.x, r.y);
@@ -150,7 +150,7 @@ namespace ENG
                 SDL_SetTextureBlendMode(atlas->GetTexture()->GetPointer(), SDL_BLENDMODE_BLEND);
                 SDL_SetTextureColorMod(atlas->GetTexture()->GetPointer(), color.red, color.green, color.blue);
                 SDL_SetTextureAlphaMod(atlas->GetTexture()->GetPointer(), color.alpha);
-                SDL_RenderTextureRotated(atlas->GetTexture()->GetWindow()->GetRenderer(), atlas->GetTexture()->GetPointer(), &s, &r, angle + camera->angle, NULL, SDL_FLIP_NONE);
+                SDL_RenderTextureRotated(atlas->GetTexture()->GetWindow()->GetRenderer(), atlas->GetTexture()->GetPointer(), &s, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
                 
             }
         }
@@ -167,8 +167,8 @@ namespace ENG
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.w = size * camera->zoom * animatedTexture->GetFrameWidth();
-            r.h = size * camera->zoom * animatedTexture->GetAtlas()->GetTexture()->GetSize().y;
+            r.w = size * camera->GetZoom() * animatedTexture->GetFrameWidth();
+            r.h = size * camera->GetZoom() * animatedTexture->GetAtlas()->GetTexture()->GetSize().y;
             r.x = pos.x - (r.w / 2);
             r.y = pos.y - (r.h / 2);
 
@@ -183,30 +183,30 @@ namespace ENG
                 SDL_SetTextureBlendMode(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), SDL_BLENDMODE_BLEND);
                 SDL_SetTextureColorMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.red, color.green, color.blue);
                 SDL_SetTextureAlphaMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.alpha);
-                SDL_RenderTextureRotated(animatedTexture->GetAtlas()->GetTexture()->GetWindow()->GetRenderer(), animatedTexture->GetAtlas()->GetTexture()->GetPointer(), &s, &r, angle + camera->angle, NULL, SDL_FLIP_NONE);
+                SDL_RenderTextureRotated(animatedTexture->GetAtlas()->GetTexture()->GetWindow()->GetRenderer(), animatedTexture->GetAtlas()->GetTexture()->GetPointer(), &s, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
                 
             }
         }
 
         static void DrawFont(Camera *camera, Font *font, std::string message, Vector2<float> position, float size = 1, float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255), Vector2<float> scale = Vector2<float>(1, 1))
         {
-            if (message == "" || !font->state)
+            if (message == "" || !font->GetState())
             {
                 return;
             }
 
-            SDL_Surface *textSurface = TTF_RenderText_Solid(font->font, message.c_str(), 0, color);
-            SDL_Texture *texture = SDL_CreateTextureFromSurface(camera->window->GetRenderer(), textSurface);
+            SDL_Surface *textSurface = TTF_RenderText_Solid(font->GetFont(), message.c_str(), 0, color);
+            SDL_Texture *texture = SDL_CreateTextureFromSurface(camera->GetWindow()->GetRenderer(), textSurface);
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.h = size * scale.x * camera->zoom * textSurface->h;
-            r.w = size * scale.y * camera->zoom * textSurface->w;
+            r.h = size * scale.x * camera->GetZoom() * textSurface->h;
+            r.w = size * scale.y * camera->GetZoom() * textSurface->w;
             r.x = pos.x;
             r.y = pos.y;
 
             if (onscreen(camera, &r))
             {
-                if (!SDL_RenderTextureRotated(camera->window->GetRenderer(), texture, NULL, &r, angle + camera->angle, NULL, SDL_FLIP_NONE))
+                if (!SDL_RenderTextureRotated(camera->GetWindow()->GetRenderer(), texture, NULL, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE))
                 {
                     Console::LogError("failed to draw text: " + message);
                 }
@@ -219,8 +219,8 @@ namespace ENG
         {
             from = projectToCamera(camera, from);
             to = projectToCamera(camera, to);
-            SDL_SetRenderDrawColor(camera->window->GetRenderer(), color.red, color.green, color.blue, color.alpha);
-            SDL_RenderLine(camera->window->GetRenderer(), from.x, from.y, to.x, to.y);
+            SDL_SetRenderDrawColor(camera->GetWindow()->GetRenderer(), color.red, color.green, color.blue, color.alpha);
+            SDL_RenderLine(camera->GetWindow()->GetRenderer(), from.x, from.y, to.x, to.y);
         }
 
         static void DrawTri(Camera *camera, Vector2<float> corner1, Vector2<float> corner2, Vector2<float> corner3, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
@@ -250,13 +250,13 @@ namespace ENG
             vertices[2].color.b = color.blue / 255.0f;
             vertices[2].color.a = color.alpha / 255.0f;
 
-            SDL_RenderGeometry(camera->window->GetRenderer(), NULL, vertices, 3, NULL, 0);
+            SDL_RenderGeometry(camera->GetWindow()->GetRenderer(), NULL, vertices, 3, NULL, 0);
         }
         static void DrawPixel(Camera *camera, Vector2<int> pos, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
         {
             Vector2<int> drawPos = projectToCamera(camera, pos);
-            SDL_SetRenderDrawColor(camera->window->GetRenderer(), color.red, color.green, color.blue, color.alpha);
-            SDL_RenderPoint(camera->window->GetRenderer(), drawPos.x, drawPos.y);
+            SDL_SetRenderDrawColor(camera->GetWindow()->GetRenderer(), color.red, color.green, color.blue, color.alpha);
+            SDL_RenderPoint(camera->GetWindow()->GetRenderer(), drawPos.x, drawPos.y);
         }
     };
 

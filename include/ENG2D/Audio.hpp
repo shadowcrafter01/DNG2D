@@ -12,13 +12,16 @@ namespace ENG
     class Audio
     {
     private:
-        static inline MIX_Mixer *mixer;
-        static inline bool flag_mixerInit = false;
+        static inline MIX_Mixer *_mixer;
+        static inline bool _flag_mixerInit = false;
+
+        MIX_Audio *_audio;
+        bool _state = false;
 
     public:
         Audio(const char *path)
         {
-            if (!flag_mixerInit)
+            if (!_flag_mixerInit)
             {
                 Console::LogLoadStart("Initializing mixer");
                 if (!MIX_Init())
@@ -26,36 +29,39 @@ namespace ENG
                     Console::LogLoadEnd(false);
                     return;
                 }
-                mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
-                if (mixer == NULL)
+                _mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+                if (_mixer == NULL)
                 {
                     Console::LogLoadEnd(false);
                     return;
                 }
                 Console::LogLoadEnd(true);
-                flag_mixerInit = true;
+                _flag_mixerInit = true;
             }
             Console::LogLoadStart((std::string) "Loading audio file [" + path + "]");
-            audio = MIX_LoadAudio(mixer, path, false);
-            if (audio == NULL)
+            _audio = MIX_LoadAudio(_mixer, path, false);
+            if (_audio == NULL)
             {
                 Console::LogLoadEnd(false);
                 return;
             }
             Console::LogLoadEnd(true);
-            state = true;
+            _state = true;
         }
 
         void Play()
         {
-            if (!MIX_PlayAudio(mixer, audio))
+            if (!MIX_PlayAudio(_mixer, _audio))
             {
                 Console::LogError("Play Audio Fail");
             }
         }
+        static void Play(Audio *audio)
+        {
+            audio->Play();
+        }
 
-        MIX_Audio *audio;
-        bool state = false;
+        
     };
 };
 #endif

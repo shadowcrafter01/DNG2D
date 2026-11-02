@@ -33,7 +33,10 @@
 namespace ENG
 {
 
-    bool GAMESTATE = false;
+
+    inline static bool GAMESTATE = false;
+    inline static Timer globalTimer;
+    
 
     bool Init(const char *appname = "c++ project", const char *appversion = "0.0.0", const char *appidentifier = "com.name.engine")
     {
@@ -87,6 +90,7 @@ namespace ENG
 
     bool Update()
     {
+        globalTimer.Update();
         Event();
         Dingus::UpdateAll();
         Action::UpdateAll();

@@ -182,26 +182,26 @@ namespace ENG::Input
 
             int winX;
             int winY;
-            SDL_GetWindowPosition(camera->window->GetPointer(), &winX, &winY);
+            SDL_GetWindowPosition(camera->GetWindow()->GetPointer(), &winX, &winY);
 
             float outX = globalX - static_cast<float>(winX);
             float outY = globalY - static_cast<float>(winY);
 
             Vector2 out(outX, outY);
 
-            out.x -= camera->window->GetCenter().x;
-            out.y -= camera->window->GetCenter().y;
+            out.x -= camera->GetWindow()->GetCenter().x;
+            out.y -= camera->GetWindow()->GetCenter().y;
 
             out.y *= -1;
 
-            out.Rotate(camera->angle);
+            out.Rotate(camera->GetAngle());
 
-            out /= camera->zoom;
+            out /= camera->GetZoom();
 
-            out /= camera->window->GetRenderer().scale;
+            out /= camera->GetWindow()->GetRenderer().scale;
 
-            out.x += camera->position.x;
-            out.y += camera->position.y;
+            out.x += camera->GetPosition().x;
+            out.y += camera->GetPosition().y;
 
             return out;
         }

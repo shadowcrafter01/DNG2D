@@ -10,11 +10,9 @@ namespace ENG
     class CollisionShape
     {
     private:
-    
+        
+
     public:
-        CollisionShape()
-        {
-        }
 
         enum class Type
         {
@@ -27,20 +25,20 @@ namespace ENG
 
         Type type = Type::Box;
 
-        // box collider params
+        // box
         b2Vec2 halfSize = {0.5f, 0.5f};
 
-        // circle collider params
+        // circle
         float radius = 0.5f;
 
-        // capsule collider params
+        // capsule
         b2Vec2 pointA = {-0.5f, 0.0f};
         b2Vec2 pointB = {0.5f, 0.0f};
 
-        // custom collision shape params
+        // custom collision shape
         std::vector<b2Vec2> vertices;
 
-        // line collider params
+        // line
         b2Vec2 segmentA = {-0.5f, 0.0f};
         b2Vec2 segmentB = {0.5f, 0.0f};
 
@@ -50,7 +48,7 @@ namespace ENG
         int group;
         bool flag_layerByGroupIndex = false;
 
-        static CollisionShape Box(float width, float height, int groupIndex = 0)
+        static CollisionShape CreateBox(float width, float height, int groupIndex = 0)
         {
             CollisionShape s;
             s.type = Type::Box;
@@ -59,7 +57,7 @@ namespace ENG
             s.flag_layerByGroupIndex = true;
             return s;
         }
-        static CollisionShape Box(Vector2<float> size, int groupIndex = 0)
+        static CollisionShape CreateBox(Vector2<float> size, int groupIndex = 0)
         {
             CollisionShape s;
             s.type = Type::Box;
@@ -68,7 +66,7 @@ namespace ENG
             s.flag_layerByGroupIndex = true;
             return s;
         }
-        static CollisionShape Box(float width, float height, uint64_t categoryBits, uint64_t maskBits)
+        static CollisionShape CreateBox(float width, float height, uint64_t categoryBits, uint64_t maskBits)
         {
             CollisionShape s;
             s.type = Type::Box;
@@ -77,7 +75,7 @@ namespace ENG
             s.category = categoryBits;
             return s;
         }
-        static CollisionShape Box(Vector2<float> size, uint64_t categoryBits, uint64_t maskBits)
+        static CollisionShape CreateBox(Vector2<float> size, uint64_t categoryBits, uint64_t maskBits)
         {
             CollisionShape s;
             s.type = Type::Box;
@@ -87,7 +85,7 @@ namespace ENG
             return s;
         }
 
-        static CollisionShape Circle(float radius, int groupIndex = 0)
+        static CollisionShape CreateCircle(float radius, int groupIndex = 0)
         {
             CollisionShape s;
             s.type = Type::Circle;
@@ -96,7 +94,7 @@ namespace ENG
             s.flag_layerByGroupIndex = true;
             return s;
         }
-        static CollisionShape Circle(float radius, uint64_t categoryBits, uint64_t maskBits)
+        static CollisionShape CreateCircle(float radius, uint64_t categoryBits, uint64_t maskBits)
         {
             CollisionShape s;
             s.type = Type::Circle;
@@ -106,7 +104,7 @@ namespace ENG
             return s;
         }
 
-        static CollisionShape Capsule(b2Vec2 a, b2Vec2 b, float radius, int groupIndex = 0)
+        static CollisionShape CreateCapsule(b2Vec2 a, b2Vec2 b, float radius, int groupIndex = 0)
         {
             CollisionShape s;
             s.type = Type::Capsule;
@@ -117,7 +115,7 @@ namespace ENG
             s.flag_layerByGroupIndex = true;
             return s;
         }
-        static CollisionShape Capsule(b2Vec2 a, b2Vec2 b, float radius, uint64_t categoryBits, uint64_t maskBits)
+        static CollisionShape CreateCapsule(b2Vec2 a, b2Vec2 b, float radius, uint64_t categoryBits, uint64_t maskBits)
         {
             CollisionShape s;
             s.type = Type::Capsule;
@@ -129,7 +127,7 @@ namespace ENG
             return s;
         }
 
-        static CollisionShape Polygon(std::vector<b2Vec2> points, int groupIndex = 0)
+        static CollisionShape CreatePolygon(std::vector<b2Vec2> points, int groupIndex = 0)
         {
             CollisionShape s;
             s.type = Type::Polygon;
@@ -138,7 +136,7 @@ namespace ENG
             s.flag_layerByGroupIndex = true;
             return s;
         }
-        static CollisionShape Polygon(std::vector<b2Vec2> points, uint64_t categoryBits, uint64_t maskBits)
+        static CollisionShape CreatePolygon(std::vector<b2Vec2> points, uint64_t categoryBits, uint64_t maskBits)
         {
             CollisionShape s;
             s.type = Type::Polygon;
@@ -148,7 +146,7 @@ namespace ENG
             return s;
         }
 
-        static CollisionShape Segment(b2Vec2 a, b2Vec2 b, int groupIndex = 0)
+        static CollisionShape CreateSegment(b2Vec2 a, b2Vec2 b, int groupIndex = 0)
         {
             CollisionShape s;
             s.type = Type::Segment;
@@ -158,7 +156,7 @@ namespace ENG
             s.flag_layerByGroupIndex = true;
             return s;
         }
-        static CollisionShape Segment(b2Vec2 a, b2Vec2 b, uint64_t categoryBits, uint64_t maskBits)
+        static CollisionShape CreateSegment(b2Vec2 a, b2Vec2 b, uint64_t categoryBits, uint64_t maskBits)
         {
             CollisionShape s;
             s.type = Type::Segment;

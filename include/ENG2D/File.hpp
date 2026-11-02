@@ -63,6 +63,11 @@ namespace ENG
             fileOut.close();
             Console::LogInfo("Write " + name + " <- " + std::to_string(value) + " to file [" + path + "]", " -FILE : ");
         }
+
+        std::string GetPath()
+        {
+            return path;
+        }
     };
 
 };

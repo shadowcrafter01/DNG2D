@@ -19,8 +19,6 @@ ENG::File file = ENG::File("test.json");
 
 ENG::Font font = ENG::Font("assets/fonts/Retro.Gaming.Extended.ttf", 32);
 
-ENG::Timer timer;
-
 void WhenBallClicked(ENG::Dingus *me)
 {
     if (me->GetName() == "ball")
@@ -57,37 +55,41 @@ void MouseRight(bool buttonState)
 
 void MoveUp()
 {
-    //if (keyState)
-        camera.position.y += 200.0 / camera.zoom * timer.delta;
+    camera.ChangePositionBy(0, 200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta());
 }
-void MoveDown(bool keyState)
+void MoveDown()
 {
-    if (keyState)
-        camera.position.y -= 200.0 / camera.zoom * timer.delta;
+    camera.ChangePositionBy(0, -200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta());
 }
-void MoveLeft(bool keyState)
+void MoveLeft()
 {
-    if (keyState)
-        camera.position.x -= 200.0 / camera.zoom * timer.delta;
+    camera.ChangePositionBy(-200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta(), 0);
 }
-void MoveRight(bool keyState)
+void MoveRight()
 {
-    if (keyState)
-        camera.position.x += 200.0 / camera.zoom * timer.delta;
+    camera.ChangePositionBy(200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta(), 0);
 }
-void ZoomIn(bool keyState)
+void ZoomIn()
 {
-    if (keyState)
-        camera.zoom += 1.0 * camera.zoom * timer.delta;
+    camera.ChangeZoomBy(1.0 * camera.GetZoom(), ENG::globalTimer.GetDelta());
 }
-void ZoomOut(bool keyState)
+void ZoomOut()
 {
-    if (keyState)
-        camera.zoom -= 1.0 * camera.zoom * timer.delta;
+    camera.ChangeZoomBy(-1.0 * camera.GetZoom(), ENG::globalTimer.GetDelta());
+}
+void RotateC()
+{
+    camera.ChangeAngleBy(-30.0, ENG::globalTimer.GetDelta());
+}
+void RotateCC()
+{
+    camera.ChangeAngleBy(30.0, ENG::globalTimer.GetDelta());
 }
 
 ENG::Action zoomIn = ENG::Action(ZoomIn, SDL_SCANCODE_UP);
 ENG::Action zoomOut = ENG::Action(ZoomOut, SDL_SCANCODE_DOWN);
+ENG::Action rotateC = ENG::Action(RotateC, SDL_SCANCODE_RIGHT);
+ENG::Action rotateCC = ENG::Action(RotateCC, SDL_SCANCODE_LEFT);
 ENG::Action moveRight = ENG::Action(MoveRight, SDL_SCANCODE_D);
 ENG::Action moveLeft = ENG::Action(MoveLeft, SDL_SCANCODE_A);
 ENG::Action moveUp = ENG::Action(MoveUp, SDL_SCANCODE_W, ACTION_WHILE_HELD);
@@ -104,7 +106,7 @@ int main()
     window.SetCursorScale(2.0f);
 
     ENG::Dingus *ground = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(0, -500, 5000, chud.GetSize().y));
-    ground->AssignCollisionShape(ENG::CollisionShape::Box(ground->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    ground->AssignCollisionShape(ENG::CollisionShape::CreateBox(ground->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
     // ENG::Dingus *wall1 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(2500, 2000, chud.size.x, 5000));
     // wall1->AssignCollisionShape(ENG::CollisionShape::Box(wall1->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
     // ENG::Dingus *wall2 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(-2500, 2000, chud.size.x, 5000));
@@ -113,7 +115,7 @@ int main()
     for (size_t i = 0; i < 100; ++i)
     {
         ENG::Dingus *ball = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(0, 1280 * i, chud.GetSize() * ENG::Vector2<int>(1, 1)));
-        ball->AssignCollisionShape(ENG::CollisionShape::Box(chud.GetSize() * ENG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
+        ball->AssignCollisionShape(ENG::CollisionShape::CreateBox(chud.GetSize() * ENG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
         ball->SetName("ball");
         ball->AssignAction(WhenBallClicked, SDL_BUTTON_RIGHT, ACTION_ON_PRESS);
     }
@@ -123,22 +125,20 @@ int main()
 
     ENG::Console::LogDebug(value);
 
-    camera.zoom = 0.1;
+    camera.SetZoom(0.1);
 
     while (ENG::Update())
     {
-        timer.Update();
-
-        ENG::Dingus::SetWorldTimeStep(timer.delta * 10);
+        ENG::Dingus::SetWorldTimeStep(ENG::globalTimer.GetDelta() * 10);
 
         if (ENG::Input::Mouse::Left)
         {
             nearest->ApplyForce((ENG::Input::Mouse::GetMouseWorldPos(&camera) - nearest->GetPosition()).Scale(500, true));
         }
-        window.SetCursorScale(ENG::Vector2<float>((cosf(timer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(timer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
+        window.SetCursorScale(ENG::Vector2<float>((cosf(ENG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(ENG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
     }
 
-    file.writeProperty("value", timer.fps);
+    file.writeProperty("value", ENG::globalTimer.GetFPS());
     ENG::Shutdown();
     return 0;
 }

@@ -32,11 +32,13 @@ namespace ENG
         std::atomic<bool> _running;
         std::atomic<uint64_t> _currentNs;
         std::thread _thread;
+        double _delta;
+        double _fps;
 
     public:
         Timer() : _running(true),
                   _currentNs(0),
-                  fps(0)
+                  _fps(0)
         {
             _thread = std::thread(&Timer::_Run, this);
         }
@@ -51,37 +53,41 @@ namespace ENG
         Timer &operator=(const Timer &) = delete;
 
         // Returns the latest captured nanosecond count since epoch of steady_clock
-        double GetNanoSecond() const noexcept
+        double GetNanoSecond()
         {
             return _currentNs.load(std::memory_order_acquire);
         }
-
-        double GetMilliSecond() const noexcept
+        double GetMilliSecond()
         {
             return _currentNs.load(std::memory_order_acquire) / 1000000.0f;
         }
-
-        double GetSecond() const noexcept
+        double GetSecond()
         {
             return _currentNs.load(std::memory_order_acquire) / 1000000000.0f;
+        }
+        double GetDelta()
+        {
+            return _delta;
+        }
+        double GetFPS()
+        {
+            return _fps;
         }
 
         void Update()
         {
             double now = GetNanoSecond();
-            delta = (now - _timeLast) / 1000000000.0f;
+            _delta = (now - _timeLast) / 1000000000.0f;
             _timeLast = now;
-            if (delta == 0)
+            if (_delta == 0)
             {
-                fps = 0;
+                _fps = 0;
             }
             else
             {
-                fps = 1.0 / delta;
+                _fps = 1.0 / _delta;
             }
         }
-        double delta;
-        double fps;
 
         // Stop the updating thread
         void Stop()
