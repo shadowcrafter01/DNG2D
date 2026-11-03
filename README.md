@@ -7,7 +7,7 @@ includes SDL3's satellite libraries (image, ttf, mixer, etc...) and nlohmann's j
 
 your project should call this library using CMake's FetchContent feature, intended to be built with gcc via Msys2 Mingw64
 
-### you'll need the following libs installed:
+### The Following Libs are Required:
 (some might be redundant now, i'll have to go through them sometime)
 
 pacman -S mingw-w64-x86_64-gcc
@@ -26,7 +26,7 @@ pacman -S mingw-w64-x86_64-cmake mingw-w64-x86_64-extra-cmake-modules
 
 pacman -S mingw-w64-x86_64-freetype
 
-### And Here's an Example CMakeLists.txt for a project called "game":
+### Example CMakeLists.txt for a project called "game":
 
     cmake_minimum_required(VERSION 3.24)
     project(game VERSION 0.1.0 LANGUAGES C CXX)
@@ -97,3 +97,36 @@ pacman -S mingw-w64-x86_64-freetype
             -static-libstdc++
         )
     endif()
+
+### Example CMakePresets.json:
+(when you use CMake to generate a template project it will want a preset, go with a compiler generated preset for mingw64 then make the preset look like this)
+
+    {
+        "version": 6,
+        "cmakeMinimumRequired": {
+            "major": 3,
+            "minor": 25,
+            "patch": 0
+        },
+        "configurePresets": [
+            {
+                "name": "mingw-build",
+                "displayName": "build with mingw64",
+                "description": "Using compilers: C = C:\\msys64\\mingw64\\bin\\gcc.exe, CXX = C:\\msys64\\mingw64\\bin\\g++.exe",
+                "generator": "Ninja",
+                "binaryDir": "${sourceDir}/build/${presetName}",
+                "cacheVariables": {
+                    "CMAKE_C_COMPILER": "C:/msys64/mingw64/bin/gcc.exe",
+                    "CMAKE_CXX_COMPILER": "C:/msys64/mingw64/bin/g++.exe",
+                    "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                    "CMAKE_BUILD_TYPE": "Debug"
+                }
+            }
+        ],
+        "buildPresets": [
+            {
+                "name": "mingw-build",
+                "configurePreset": "mingw-build"
+            }
+        ]
+    }
