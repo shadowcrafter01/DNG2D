@@ -17,6 +17,7 @@
 #include <box2d/box2d.h>
 #include "ENG2D/Math.hpp"
 #include "ENG2D/Action.hpp"
+#include "ENG2D/AnimatedTexture.hpp"
 
 #include <memory>
 #include <utility>
@@ -39,9 +40,16 @@ namespace ENG
                 _transform.position.y = t.p.y;
                 _transform.angle = b2Rot_GetAngle(t.q) * -180.0 / M_PI;
             }
-            if (_texture != nullptr && _camera != nullptr)
+            if ((_texture != nullptr || _animatedTexture != nullptr) && _camera != nullptr)
             {
-                DrawTools::DrawTexture(_camera, _texture, _transform.position, _transform.size, _transform.angle, _color);
+                if (flag_animated)
+                {
+                    DrawTools::DrawAnimatedTexture(_camera, _animatedTexture, _transform.position, 1, _transform.size, _transform.angle, _color);
+                }
+                else
+                {
+                    DrawTools::DrawTexture(_camera, _texture, _transform.position, _transform.size, _transform.angle, _color);
+                }
             }
 
             bool hover = _transform.ContainsPoint(Input::Mouse::GetMouseWorldPos(_camera));
@@ -171,6 +179,8 @@ namespace ENG
         CollisionShape collisionShape;
         Camera *_camera = nullptr;
         Texture *_texture = nullptr;
+        AnimatedTexture *_animatedTexture = nullptr;
+        bool flag_animated = false;
         ColorRGBA _color = RGBA_TEXTURE_UNCHANGED;
         float _renderLayer = 0;
         const char *_name = "dingus";
@@ -217,6 +227,27 @@ namespace ENG
             _transform.position = pos;
             _transform.angle = angle;
         }
+        Dingus(Camera *camera, AnimatedTexture *texture, Transform2<float> _transform) : _camera{camera},
+                                                                                         _animatedTexture{texture},
+                                                                                         _transform{_transform}
+        {
+            flag_animated = true;
+        }
+        Dingus(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera},
+                                                                                                                                                                   _animatedTexture{texture}
+        {
+            if (size = Vector2<float>(0, 0))
+            {
+                _transform.size = texture->GetSize();
+            }
+            else
+            {
+                _transform.size = size;
+            }
+            _transform.position = pos;
+            _transform.angle = angle;
+            flag_animated = true;
+        }
 
     public:
         static Dingus *Create(Camera *camera, Transform2<float> transform)
@@ -247,6 +278,24 @@ namespace ENG
             return ptr;
         }
         static Dingus *Create(Camera *camera, Texture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
+        {
+            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
+            dngs->_renderLayer = 0.0f;
+            Dingus *ptr = dngs.get();
+            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+            ++_zeroIndex;
+            return ptr;
+        }
+        static Dingus *Create(Camera *camera, AnimatedTexture *texture, Transform2<float> transform)
+        {
+            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, transform));
+            dngs->_renderLayer = 0.0f;
+            Dingus *ptr = dngs.get();
+            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+            ++_zeroIndex;
+            return ptr;
+        }
+        static Dingus *Create(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
         {
             auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
             dngs->_renderLayer = 0.0f;

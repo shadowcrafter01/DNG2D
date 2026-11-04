@@ -151,7 +151,6 @@ namespace ENG
                 SDL_SetTextureColorMod(atlas->GetTexture()->GetPointer(), color.red, color.green, color.blue);
                 SDL_SetTextureAlphaMod(atlas->GetTexture()->GetPointer(), color.alpha);
                 SDL_RenderTextureRotated(atlas->GetTexture()->GetWindow()->GetRenderer(), atlas->GetTexture()->GetPointer(), &s, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
-                
             }
         }
         static void DrawAnimatedTexture(Camera *camera, AnimatedTexture *animatedTexture, Vector2<float> position, int frame = -1, float size = 1, float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
@@ -184,7 +183,38 @@ namespace ENG
                 SDL_SetTextureColorMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.red, color.green, color.blue);
                 SDL_SetTextureAlphaMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.alpha);
                 SDL_RenderTextureRotated(animatedTexture->GetAtlas()->GetTexture()->GetWindow()->GetRenderer(), animatedTexture->GetAtlas()->GetTexture()->GetPointer(), &s, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
-                
+            }
+        }
+        static void DrawAnimatedTexture(Camera *camera, AnimatedTexture *animatedTexture, Vector2<float> position, int frame = -1, Vector2<float> size = Vector2<float>(1.0, 1.0), float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
+        {
+            if (frame == -1)
+            {
+                frame = animatedTexture->GetCurrentFrame();
+            }
+            else
+            {
+                frame = frame % animatedTexture->GetFrameCount();
+            }
+
+            Vector2<float> pos = projectToCamera(camera, position);
+            SDL_FRect r;
+            r.w = size.x * camera->GetZoom() * animatedTexture->GetFrameWidth();
+            r.h = size.y * camera->GetZoom() * animatedTexture->GetAtlas()->GetTexture()->GetSize().y;
+            r.x = pos.x - (r.w / 2);
+            r.y = pos.y - (r.h / 2);
+
+            if (onscreen(camera, &r))
+            {
+                SDL_FRect s;
+                s.w = animatedTexture->GetFrameWidth();
+                s.h = animatedTexture->GetAtlas()->GetTexture()->GetSize().y;
+                s.x = animatedTexture->GetFrameWidth() * frame;
+                s.y = 0;
+
+                SDL_SetTextureBlendMode(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), SDL_BLENDMODE_BLEND);
+                SDL_SetTextureColorMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.red, color.green, color.blue);
+                SDL_SetTextureAlphaMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.alpha);
+                SDL_RenderTextureRotated(animatedTexture->GetAtlas()->GetTexture()->GetWindow()->GetRenderer(), animatedTexture->GetAtlas()->GetTexture()->GetPointer(), &s, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
             }
         }
 

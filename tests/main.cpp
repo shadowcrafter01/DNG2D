@@ -1,6 +1,4 @@
 #include <ENG2D/Main.hpp>
-#include <memory>
-#include <stdexcept>
 
 ENG::Window window = ENG::Window("le wrapler rawr", ENG::Vector2(640, 480), SDL_WINDOW_RESIZABLE);
 
@@ -11,9 +9,9 @@ ENG::Texture cursor = ENG::Texture(&window, "assets/textures/cursor.png");
 ENG::Texture cursor2 = ENG::Texture(&window, "assets/textures/cursorpressed.png");
 ENG::Texture chud = ENG::Texture(&window, "assets/textures/chud.png");
 
-// ENG::Atlas fireAtlas = ENG::Atlas::Create(&window, "assets/textures/fire.png");
+ENG::Atlas fireAtlas = ENG::Atlas::Create(&window, "assets/textures/fire.png");
 
-// ENG::AnimatedTexture fire = ENG::AnimatedTexture(&fireAtlas, 8, 1);
+ENG::AnimatedTexture fire = ENG::AnimatedTexture(&fireAtlas, 8, 1);
 
 ENG::File file = ENG::File("test.json");
 
@@ -107,10 +105,10 @@ int main()
 
     ENG::Dingus *ground = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(0, -500, 5000, chud.GetSize().y));
     ground->AssignCollisionShape(ENG::CollisionShape::CreateBox(ground->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
-    // ENG::Dingus *wall1 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(2500, 2000, chud.size.x, 5000));
-    // wall1->AssignCollisionShape(ENG::CollisionShape::Box(wall1->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
-    // ENG::Dingus *wall2 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(-2500, 2000, chud.size.x, 5000));
-    // wall2->AssignCollisionShape(ENG::CollisionShape::Box(wall2->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    ENG::Dingus *wall1 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(2500, 2000, chud.GetSize().x, 5000));
+    wall1->AssignCollisionShape(ENG::CollisionShape::CreateBox(wall1->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    ENG::Dingus *wall2 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(-2500, 2000, chud.GetSize().x, 5000));
+    wall2->AssignCollisionShape(ENG::CollisionShape::CreateBox(wall2->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
 
     for (size_t i = 0; i < 100; ++i)
     {
@@ -119,6 +117,8 @@ int main()
         ball->SetName("ball");
         ball->AssignAction(WhenBallClicked, SDL_BUTTON_RIGHT, ACTION_ON_PRESS);
     }
+
+    ENG::Dingus *animtest = ENG::Dingus::Create(&camera, &fire, ENG::Transform2<float>(0,0,100,100,0));
 
     double value;
     file.readProperty("value", &value, 10.0);
@@ -136,6 +136,7 @@ int main()
             nearest->ApplyForce((ENG::Input::Mouse::GetMouseWorldPos(&camera) - nearest->GetPosition()).Scale(500, true));
         }
         window.SetCursorScale(ENG::Vector2<float>((cosf(ENG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(ENG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
+        animtest->SetPosition(ENG::Input::Mouse::GetMouseWorldPos(&camera));
     }
 
     file.writeProperty("value", ENG::globalTimer.GetFPS());

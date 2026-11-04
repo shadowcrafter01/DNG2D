@@ -22,7 +22,7 @@ namespace ENG
         {
             _frameCount = atlas->GetTexture()->GetSize().x / frame_width;
         }
-        
+
         int GetFrameCount()
         {
             return _frameCount;
@@ -43,7 +43,10 @@ namespace ENG
         {
             return _currentFrame;
         }
-
+        Vector2<int> GetSize()
+        {
+            return Vector2<int>(_frameWidth, _atlas->GetTexture()->GetSize().y);
+        }
     };
 };
 #endif
