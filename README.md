@@ -1,5 +1,6 @@
-# ENG2D
-2d c++ game engine built on SDL3 and Box2D
+# DNG2D
+
+Dingus 2d game engine utilizing SDL3 and box2d
 
 includes SDL3's satellite libraries (image, ttf, mixer, etc...) and nlohmann's json library as well
 
