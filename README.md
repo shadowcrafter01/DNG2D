@@ -1,6 +1,6 @@
 # DNG2D
 
-Dingus 2d game engine utilizing SDL3 and box2d
+Dingus 2d game Dngine utilizing SDL3 and box2d
 
 includes SDL3's satellite libraries (image, ttf, mixer, etc...) and nlohmann's json library as well
 
@@ -37,15 +37,15 @@ pacman -S mingw-w64-x86_64-freetype
 
     include(FetchContent)
 
-    set(ENG2D_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(DNG2D_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     FetchContent_Declare(
-        ENG2D
+        DNG2D
         GIT_REPOSITORY https://github.com/shadowcrafter01/DNG2D.git
         GIT_TAG main
         GIT_SHALLOW TRUE
     )
 
-    FetchContent_MakeAvailable(ENG2D)
+    FetchContent_MakeAvailable(DNG2D)
 
     add_executable(game src/main.cpp)
 
@@ -58,7 +58,7 @@ pacman -S mingw-w64-x86_64-freetype
     target_link_libraries(
         game
         PRIVATE
-            ENG2D::ENG2D
+            DNG2D::DNG2D
     )
 
     # use this to copy your assets folder to the build directory so the built program runs
