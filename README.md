@@ -49,6 +49,12 @@ pacman -S mingw-w64-x86_64-freetype
 
     add_executable(game src/main.cpp)
 
+    target_include_directories(
+        game
+        PUBLIC
+            "include"
+    )
+
     target_compile_features(
         game
         PRIVATE

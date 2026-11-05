@@ -44,9 +44,9 @@ namespace DNG
         SDL_WindowFlags _flags;
 
     public:
-        Window(const char *title, Vector2<int> size, SDL_WindowFlags flags) : _title{title},
-                                                                              _size{size},
-                                                                              _flags{flags}
+        Window(const char *title = "DNG2D", Vector2<int> size = Vector2<int>(640, 480), SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE) : _title{title},
+                                                                                                                                        _size{size},
+                                                                                                                                        _flags{flags}
         {
             Console::LogLoadStart((std::string) "Creating window [" + _title + "]");
             if (!SDL_CreateWindowAndRenderer(_title, size.x, size.y, flags, &_pointer, &_renderer._pointer))
