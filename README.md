@@ -40,7 +40,7 @@ pacman -S mingw-w64-x86_64-freetype
     set(ENG2D_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     FetchContent_Declare(
         ENG2D
-        GIT_REPOSITORY https://github.com/shadowcrafter01/ENG2D.git
+        GIT_REPOSITORY https://github.com/shadowcrafter01/DNG2D.git
         GIT_TAG main
         GIT_SHALLOW TRUE
     )
