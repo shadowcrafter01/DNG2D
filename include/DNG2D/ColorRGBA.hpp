@@ -1,9 +1,9 @@
-#ifndef ENG_COLORRGBA_H
-#define ENG_COLORRGBA_H
+#ifndef DNG_COLORRGBA_H
+#define DNG_COLORRGBA_H
 
 #include <SDL3/SDL.h>
 
-namespace ENG
+namespace DNG
 {
 
     class ColorRGBA

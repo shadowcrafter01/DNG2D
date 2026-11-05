@@ -1,19 +1,19 @@
-#ifndef ENG_DRAWTOOLS_HPP
-#define ENG_DRAWTOOLS_HPP
+#ifndef DNG_DRAWTOOLS_HPP
+#define DNG_DRAWTOOLS_HPP
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 
-#include "ENG2D/Camera.hpp"
-#include "ENG2D/Texture.hpp"
-#include "ENG2D/Atlas.hpp"
-#include "ENG2D/AnimatedTexture.hpp"
-#include "ENG2D/Font.hpp"
+#include "DNG2D/Camera.hpp"
+#include "DNG2D/Texture.hpp"
+#include "DNG2D/Atlas.hpp"
+#include "DNG2D/AnimatedTexture.hpp"
+#include "DNG2D/Font.hpp"
 #include <cmath>
-#include "ENG2D/Vector.hpp"
-#include "ENG2D/ColorRGBA.hpp"
+#include "DNG2D/Vector.hpp"
+#include "DNG2D/ColorRGBA.hpp"
 
-namespace ENG
+namespace DNG
 {
 
     class DrawTools

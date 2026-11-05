@@ -1,5 +1,5 @@
-#ifndef ENG_TIMER_HPP
-#define ENG_TIMER_HPP
+#ifndef DNG_TIMER_HPP
+#define DNG_TIMER_HPP
 
 #include <atomic>
 #include <chrono>
@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <stdexcept>
 
-namespace ENG
+namespace DNG
 {
 
     class Timer

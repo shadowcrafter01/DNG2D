@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.20.0)
 project(
-    ENG2D
+    DNG2D
     #VERSION 0.1.0
     LANGUAGES C CXX
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)  # lets VS Code's IntelliSense find everything
 
-option(ENG2D_BUILD_TESTS "Build ENG2D tests" OFF)
+option(DNG2D_BUILD_TESTS "Build DNG2D tests" OFF)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/bin"
@@ -112,24 +112,24 @@ FetchContent_MakeAvailable(
     json
 )
 
-add_library(ENG2D INTERFACE)
-add_library(ENG2D::ENG2D ALIAS ENG2D)
+add_library(DNG2D INTERFACE)
+add_library(DNG2D::DNG2D ALIAS DNG2D)
 
 target_compile_features(
-    ENG2D
+    DNG2D
     INTERFACE
     cxx_std_20
 )
 
 target_include_directories(
-    ENG2D
+    DNG2D
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(
-    ENG2D
+    DNG2D
     INTERFACE
         SDL3::SDL3
         SDL3_image::SDL3_image
@@ -139,7 +139,7 @@ target_link_libraries(
         nlohmann_json::nlohmann_json
 )
 
-if(ENG2D_BUILD_TESTS)
+if(DNG2D_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()

@@ -1,12 +1,12 @@
-#ifndef ENG_VECTOR2_HPP
-#define ENG_VECTOR2_HPP
+#ifndef DNG_VECTOR2_HPP
+#define DNG_VECTOR2_HPP
 
 #include <math.h>
 #include <string>
 #include <sstream>
 #include <box2d/box2d.h>
 
-namespace ENG
+namespace DNG
 {
 
     template <class T = float>
@@ -77,7 +77,7 @@ namespace ENG
             T abs = vec.Magnitude();
             return Vector2(vec.x / abs, vec.y / abs);
         }
-        inline static Vector2<T> B2D_to_ENG(b2Vec2 vec)
+        inline static Vector2<T> B2D_to_DNG(b2Vec2 vec)
         {
             return (Vector2<T>){(T)vec.x, (T)vec.y};
         }

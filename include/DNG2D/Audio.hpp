@@ -1,12 +1,12 @@
-#ifndef ENG_AUDIO_HPP
-#define ENG_AUDIO_HPP
+#ifndef DNG_AUDIO_HPP
+#define DNG_AUDIO_HPP
 
 #include <SDL3_mixer/SDL_mixer.h>
 
 // #include "Main.hpp"
-#include "ENG2D/Console.hpp"
+#include "DNG2D/Console.hpp"
 
-namespace ENG
+namespace DNG
 {
 
     class Audio

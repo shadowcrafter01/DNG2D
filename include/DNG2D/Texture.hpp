@@ -1,14 +1,14 @@
-#ifndef ENG_TEXTURE_HPP
-#define ENG_TEXTURE_HPP
+#ifndef DNG_TEXTURE_HPP
+#define DNG_TEXTURE_HPP
 
-#include "ENG2D/Window.hpp"
-#include "ENG2D/Vector.hpp"
-#include "ENG2D/Console.hpp"
+#include "DNG2D/Window.hpp"
+#include "DNG2D/Vector.hpp"
+#include "DNG2D/Console.hpp"
 #include <SDL3_image/SDL_image.h>
-#include "ENG2D/Font.hpp"
-#include "ENG2D/Camera.hpp"
+#include "DNG2D/Font.hpp"
+#include "DNG2D/Camera.hpp"
 
-namespace ENG
+namespace DNG
 {
 
     class Texture

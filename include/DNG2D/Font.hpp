@@ -1,13 +1,13 @@
-#ifndef ENG_FONT_HPP
-#define ENG_FONT_HPP
+#ifndef DNG_FONT_HPP
+#define DNG_FONT_HPP
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <string>
 
-#include "ENG2D/Console.hpp"
-#include "ENG2D/Texture.hpp"
+#include "DNG2D/Console.hpp"
+#include "DNG2D/Texture.hpp"
 
-namespace ENG
+namespace DNG
 {
 
     class Font

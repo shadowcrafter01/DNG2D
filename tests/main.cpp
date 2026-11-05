@@ -1,23 +1,23 @@
-#include <ENG2D/Main.hpp>
+#include <DNG2D/Main.hpp>
 
-ENG::Window window = ENG::Window("le wrapler rawr", ENG::Vector2(640, 480), SDL_WINDOW_RESIZABLE);
+DNG::Window window = DNG::Window("le wrapler rawr", DNG::Vector2(640, 480), SDL_WINDOW_RESIZABLE);
 
-ENG::Camera camera = ENG::Camera(&window);
+DNG::Camera camera = DNG::Camera(&window);
 
-ENG::Texture test = ENG::Texture(&window, "assets/textures/billGates.bmp");
-ENG::Texture cursor = ENG::Texture(&window, "assets/textures/cursor.png");
-ENG::Texture cursor2 = ENG::Texture(&window, "assets/textures/cursorpressed.png");
-ENG::Texture chud = ENG::Texture(&window, "assets/textures/chud.png");
+DNG::Texture test = DNG::Texture(&window, "assets/textures/billGates.bmp");
+DNG::Texture cursor = DNG::Texture(&window, "assets/textures/cursor.png");
+DNG::Texture cursor2 = DNG::Texture(&window, "assets/textures/cursorpressed.png");
+DNG::Texture chud = DNG::Texture(&window, "assets/textures/chud.png");
 
-ENG::Atlas fireAtlas = ENG::Atlas::Create(&window, "assets/textures/fire.png");
+DNG::Atlas fireAtlas = DNG::Atlas::Create(&window, "assets/textures/fire.png");
 
-ENG::AnimatedTexture fire = ENG::AnimatedTexture(&fireAtlas, 8, 1);
+DNG::AnimatedTexture fire = DNG::AnimatedTexture(&fireAtlas, 8, 1);
 
-ENG::File file = ENG::File("test.json");
+DNG::File file = DNG::File("test.json");
 
-ENG::Font font = ENG::Font("assets/fonts/Retro.Gaming.Extended.ttf", 32);
+DNG::Font font = DNG::Font("assets/fonts/Retro.Gaming.Extended.ttf", 32);
 
-void WhenBallClicked(ENG::Dingus *me)
+void WhenBallClicked(DNG::Dingus *me)
 {
     if (me->GetName() == "ball")
     {
@@ -25,21 +25,21 @@ void WhenBallClicked(ENG::Dingus *me)
     }
 }
 
-ENG::Dingus *nearest = nullptr;
+DNG::Dingus *nearest = nullptr;
 
 void ResetCursor()
 {
     window.SetCustomCursor(cursor);
 }
-ENG::RunOnce resetCursor(ResetCursor);
+DNG::RunOnce resetCursor(ResetCursor);
 void LayerAndCalcNearest()
 {
     nearest->SetRenderLayer(0);
     window.SetCustomCursor(cursor2);
-    nearest = ENG::Dingus::GetNearest(ENG::Input::Mouse::GetMouseWorldPos(&camera), "ball");
+    nearest = DNG::Dingus::GetNearest(DNG::Input::Mouse::GetMouseWorldPos(&camera), "ball");
     nearest->SetRenderLayer(1);
 }
-ENG::RunOnce layerAndCalcNearest(LayerAndCalcNearest);
+DNG::RunOnce layerAndCalcNearest(LayerAndCalcNearest);
 
 void MouseLeft(bool buttonState)
 {
@@ -53,93 +53,93 @@ void MouseRight(bool buttonState)
 
 void MoveUp()
 {
-    camera.ChangePositionBy(0, 200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta());
+    camera.ChangePositionBy(0, 200.0 / camera.GetZoom(), DNG::globalTimer.GetDelta());
 }
 void MoveDown()
 {
-    camera.ChangePositionBy(0, -200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta());
+    camera.ChangePositionBy(0, -200.0 / camera.GetZoom(), DNG::globalTimer.GetDelta());
 }
 void MoveLeft()
 {
-    camera.ChangePositionBy(-200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta(), 0);
+    camera.ChangePositionBy(-200.0 / camera.GetZoom(), 0, DNG::globalTimer.GetDelta());
 }
 void MoveRight()
 {
-    camera.ChangePositionBy(200.0 / camera.GetZoom(), ENG::globalTimer.GetDelta(), 0);
+    camera.ChangePositionBy(200.0 / camera.GetZoom(), 0, DNG::globalTimer.GetDelta());
 }
 void ZoomIn()
 {
-    camera.ChangeZoomBy(1.0 * camera.GetZoom(), ENG::globalTimer.GetDelta());
+    camera.ChangeZoomBy(1.0 * camera.GetZoom(), DNG::globalTimer.GetDelta());
 }
 void ZoomOut()
 {
-    camera.ChangeZoomBy(-1.0 * camera.GetZoom(), ENG::globalTimer.GetDelta());
+    camera.ChangeZoomBy(-1.0 * camera.GetZoom(), DNG::globalTimer.GetDelta());
 }
 void RotateC()
 {
-    camera.ChangeAngleBy(-30.0, ENG::globalTimer.GetDelta());
+    camera.ChangeAngleBy(-30.0, DNG::globalTimer.GetDelta());
 }
 void RotateCC()
 {
-    camera.ChangeAngleBy(30.0, ENG::globalTimer.GetDelta());
+    camera.ChangeAngleBy(30.0, DNG::globalTimer.GetDelta());
 }
 
-ENG::Action zoomIn = ENG::Action(ZoomIn, SDL_SCANCODE_UP);
-ENG::Action zoomOut = ENG::Action(ZoomOut, SDL_SCANCODE_DOWN);
-ENG::Action rotateC = ENG::Action(RotateC, SDL_SCANCODE_RIGHT);
-ENG::Action rotateCC = ENG::Action(RotateCC, SDL_SCANCODE_LEFT);
-ENG::Action moveRight = ENG::Action(MoveRight, SDL_SCANCODE_D);
-ENG::Action moveLeft = ENG::Action(MoveLeft, SDL_SCANCODE_A);
-ENG::Action moveUp = ENG::Action(MoveUp, SDL_SCANCODE_W, ACTION_WHILE_HELD);
-ENG::Action moveDown = ENG::Action(MoveDown, SDL_SCANCODE_S);
+DNG::Action zoomIn = DNG::Action(ZoomIn, SDL_SCANCODE_UP);
+DNG::Action zoomOut = DNG::Action(ZoomOut, SDL_SCANCODE_DOWN);
+DNG::Action rotateC = DNG::Action(RotateC, SDL_SCANCODE_RIGHT);
+DNG::Action rotateCC = DNG::Action(RotateCC, SDL_SCANCODE_LEFT);
+DNG::Action moveRight = DNG::Action(MoveRight, SDL_SCANCODE_D);
+DNG::Action moveLeft = DNG::Action(MoveLeft, SDL_SCANCODE_A);
+DNG::Action moveUp = DNG::Action(MoveUp, SDL_SCANCODE_W, ACTION_WHILE_HELD);
+DNG::Action moveDown = DNG::Action(MoveDown, SDL_SCANCODE_S);
 
-ENG::Action mouseLeft = ENG::Action(MouseLeft, SDL_BUTTON_LEFT);
-ENG::Action mouseRight = ENG::Action(MouseRight, SDL_BUTTON_RIGHT);
+DNG::Action mouseLeft = DNG::Action(MouseLeft, SDL_BUTTON_LEFT);
+DNG::Action mouseRight = DNG::Action(MouseRight, SDL_BUTTON_RIGHT);
 
 int main()
 {
-    ENG::Init();
+    DNG::Init();
 
     window.SetCustomCursor(cursor);
     window.SetCursorScale(2.0f);
 
-    ENG::Dingus *ground = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(0, -500, 5000, chud.GetSize().y));
-    ground->AssignCollisionShape(ENG::CollisionShape::CreateBox(ground->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
-    ENG::Dingus *wall1 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(2500, 2000, chud.GetSize().x, 5000));
-    wall1->AssignCollisionShape(ENG::CollisionShape::CreateBox(wall1->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
-    ENG::Dingus *wall2 = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(-2500, 2000, chud.GetSize().x, 5000));
-    wall2->AssignCollisionShape(ENG::CollisionShape::CreateBox(wall2->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    DNG::Dingus *ground = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(0, -500, 5000, chud.GetSize().y));
+    ground->AssignCollisionShape(DNG::CollisionShape::CreateBox(ground->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    DNG::Dingus *wall1 = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(2500, 2000, chud.GetSize().x, 5000));
+    wall1->AssignCollisionShape(DNG::CollisionShape::CreateBox(wall1->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    DNG::Dingus *wall2 = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(-2500, 2000, chud.GetSize().x, 5000));
+    wall2->AssignCollisionShape(DNG::CollisionShape::CreateBox(wall2->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
 
     for (size_t i = 0; i < 100; ++i)
     {
-        ENG::Dingus *ball = ENG::Dingus::Create(&camera, &chud, ENG::Transform2<float>(0, 1280 * i, chud.GetSize() * ENG::Vector2<int>(1, 1)));
-        ball->AssignCollisionShape(ENG::CollisionShape::CreateBox(chud.GetSize() * ENG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
+        DNG::Dingus *ball = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(0, 1280 * i, chud.GetSize() * DNG::Vector2<int>(1, 1)));
+        ball->AssignCollisionShape(DNG::CollisionShape::CreateBox(chud.GetSize() * DNG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
         ball->SetName("ball");
         ball->AssignAction(WhenBallClicked, SDL_BUTTON_RIGHT, ACTION_ON_PRESS);
     }
 
-    ENG::Dingus *animtest = ENG::Dingus::Create(&camera, &fire, ENG::Transform2<float>(0,0,100,100,0));
+    DNG::Dingus *animtest = DNG::Dingus::Create(&camera, &fire, DNG::Transform2<float>(0,0,100,100,0));
 
     double value;
     file.readProperty("value", &value, 10.0);
 
-    ENG::Console::LogDebug(value);
+    DNG::Console::LogDebug(value);
 
     camera.SetZoom(0.1);
 
-    while (ENG::Update())
+    while (DNG::Update())
     {
-        ENG::Dingus::SetWorldTimeStep(ENG::globalTimer.GetDelta() * 10);
+        DNG::Dingus::SetWorldTimeStep(DNG::globalTimer.GetDelta() * 10);
 
-        if (ENG::Input::Mouse::Left)
+        if (DNG::Input::Mouse::Left)
         {
-            nearest->ApplyForce((ENG::Input::Mouse::GetMouseWorldPos(&camera) - nearest->GetPosition()).Scale(500, true));
+            nearest->ApplyForce((DNG::Input::Mouse::GetMouseWorldPos(&camera) - nearest->GetPosition()).Scale(500, true));
         }
-        window.SetCursorScale(ENG::Vector2<float>((cosf(ENG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(ENG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
-        animtest->SetPosition(ENG::Input::Mouse::GetMouseWorldPos(&camera));
+        window.SetCursorScale(DNG::Vector2<float>((cosf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
+        animtest->SetPosition(DNG::Input::Mouse::GetMouseWorldPos(&camera));
     }
 
-    file.writeProperty("value", ENG::globalTimer.GetFPS());
-    ENG::Shutdown();
+    file.writeProperty("value", DNG::globalTimer.GetFPS());
+    DNG::Shutdown();
     return 0;
 }

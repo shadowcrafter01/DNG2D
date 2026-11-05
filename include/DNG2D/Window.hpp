@@ -1,15 +1,15 @@
-#ifndef ENG_WINDOW_HPP
-#define ENG_WINDOW_HPP
+#ifndef DNG_WINDOW_HPP
+#define DNG_WINDOW_HPP
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
-#include "ENG2D/Vector.hpp"
+#include "DNG2D/Vector.hpp"
 #include <vector>
-#include "ENG2D/Console.hpp"
+#include "DNG2D/Console.hpp"
 #include <string>
 
-namespace ENG
+namespace DNG
 {
 
     class Window
@@ -33,7 +33,7 @@ namespace ENG
 
         SDL_Window *_pointer;
         Renderer _renderer;
-        TTF_TextEngine *_ttfEngine;
+        TTF_TextEngine *_ttfDngine;
         SDL_Texture *_cursor;
         Vector2<int> _cursorSize = Vector2<int>(0, 0);
         Vector2<float> _cursorScale = Vector2<int>(1, 1);
@@ -59,8 +59,8 @@ namespace ENG
                 Console::LogLoadEnd(false);
                 return;
             }
-            _ttfEngine = TTF_CreateRendererTextEngine(_renderer);
-            if (_ttfEngine == NULL)
+            _ttfDngine = TTF_CreateRendererTextEngine(_renderer);
+            if (_ttfDngine == NULL)
             {
                 Console::LogLoadEnd(false);
             }
@@ -88,7 +88,7 @@ namespace ENG
         }
         TTF_TextEngine *GetTextEngine()
         {
-            return _ttfEngine;
+            return _ttfDngine;
         }
         Vector2<int> GetSize()
         {

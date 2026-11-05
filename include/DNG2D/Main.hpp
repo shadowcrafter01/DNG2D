@@ -1,5 +1,5 @@
-#ifndef ENG_MAIN_HPP
-#define ENG_MAIN_HPP
+#ifndef DNG_MAIN_HPP
+#define DNG_MAIN_HPP
 
 #include <SDL3/SDL.h>
 // #include <SDL3/SDL_main.h>
@@ -10,27 +10,27 @@
 #include <iostream>
 #include <functional>
 
-#include "ENG2D/Vector.hpp"
+#include "DNG2D/Vector.hpp"
 
-#include "ENG2D/Console.hpp"
-#include "ENG2D/Window.hpp"
-#include "ENG2D/Texture.hpp"
-#include "ENG2D/Atlas.hpp"
-#include "ENG2D/Font.hpp"
-#include "ENG2D/Timer.hpp"
-#include "ENG2D/Audio.hpp"
-#include "ENG2D/Input.hpp"
-#include "ENG2D/Camera.hpp"
-#include "ENG2D/File.hpp"
-#include "ENG2D/DrawTools.hpp"
-#include "ENG2D/Pen.hpp"
-#include "ENG2D/CollisionShape.hpp"
-#include "ENG2D/Dingus.hpp"
-#include "ENG2D/Math.hpp"
-#include "ENG2D/Transform.hpp"
-#include "ENG2D/Action.hpp"
+#include "DNG2D/Console.hpp"
+#include "DNG2D/Window.hpp"
+#include "DNG2D/Texture.hpp"
+#include "DNG2D/Atlas.hpp"
+#include "DNG2D/Font.hpp"
+#include "DNG2D/Timer.hpp"
+#include "DNG2D/Audio.hpp"
+#include "DNG2D/Input.hpp"
+#include "DNG2D/Camera.hpp"
+#include "DNG2D/File.hpp"
+#include "DNG2D/DrawTools.hpp"
+#include "DNG2D/Pen.hpp"
+#include "DNG2D/CollisionShape.hpp"
+#include "DNG2D/Dingus.hpp"
+#include "DNG2D/Math.hpp"
+#include "DNG2D/Transform.hpp"
+#include "DNG2D/Action.hpp"
 
-namespace ENG
+namespace DNG
 {
 
 
@@ -38,10 +38,10 @@ namespace ENG
     inline static Timer globalTimer;
     
 
-    bool Init(const char *appname = "c++ project", const char *appversion = "0.0.0", const char *appidentifier = "com.name.engine")
+    bool Init(const char *appname = "c++ project", const char *appversion = "0.0.0", const char *appidentifier = "com.name.Dngine")
     {
         bool flag = false;
-        Console::LogLoadStart("Initializing engine");
+        Console::LogLoadStart("Initializing Dngine");
         // metadata
         if (!SDL_SetAppMetadata(appname, appversion, appidentifier))
         {
@@ -61,7 +61,7 @@ namespace ENG
         }
         else
         {
-            Console::LogLoadEnd(true, "Engine started!");
+            Console::LogLoadEnd(true, "Dngine started!");
         }
         GAMESTATE = true;
         return true;

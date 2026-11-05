@@ -1,5 +1,5 @@
-#ifndef ENG_FILE_HPP
-#define ENG_FILE_HPP
+#ifndef DNG_FILE_HPP
+#define DNG_FILE_HPP
 
 #include <string>
 #include <iostream>
@@ -7,11 +7,11 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
-#include "ENG2D/Console.hpp"
+#include "DNG2D/Console.hpp"
 
 using json = nlohmann::json;
 
-namespace ENG
+namespace DNG
 {
 
     class File

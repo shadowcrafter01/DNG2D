@@ -1,10 +1,10 @@
-#ifndef ENG_CAMERA_HPP
-#define ENG_CAMERA_HPP
+#ifndef DNG_CAMERA_HPP
+#define DNG_CAMERA_HPP
 
-#include "ENG2D/Window.hpp"
-#include "ENG2D/Timer.hpp"
+#include "DNG2D/Window.hpp"
+#include "DNG2D/Timer.hpp"
 
-namespace ENG
+namespace DNG
 {
 
     class Camera

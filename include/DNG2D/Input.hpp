@@ -1,16 +1,16 @@
-#ifndef ENG_INPUT_CPP
-#define ENG_INPUT_CPP
+#ifndef DNG_INPUT_CPP
+#define DNG_INPUT_CPP
 
 #include <SDL3/SDL.h>
-#include <ENG2D/Vector.hpp>
+#include <DNG2D/Vector.hpp>
 // #include <unordered_map>
 #include <unordered_set>
 #include <functional>
 #include <vector>
 
-#include "ENG2D/Camera.hpp"
+#include "DNG2D/Camera.hpp"
 
-namespace ENG::Input
+namespace DNG::Input
 {
 
     class Mouse

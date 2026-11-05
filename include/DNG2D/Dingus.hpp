@@ -1,29 +1,29 @@
-#ifndef ENG_DINGUS_HPP
-#define ENG_DINGUS_HPP
+#ifndef DNG_DINGUS_HPP
+#define DNG_DINGUS_HPP
 
-#include "ENG2D/Window.hpp"
-#include "ENG2D/Texture.hpp"
-#include "ENG2D/Camera.hpp"
-#include "ENG2D/DrawTools.hpp"
-#include "ENG2D/Timer.hpp"
-#include "ENG2D/Vector.hpp"
+#include "DNG2D/Window.hpp"
+#include "DNG2D/Texture.hpp"
+#include "DNG2D/Camera.hpp"
+#include "DNG2D/DrawTools.hpp"
+#include "DNG2D/Timer.hpp"
+#include "DNG2D/Vector.hpp"
 #include <vector>
-#include "ENG2D/CollisionShape.hpp"
+#include "DNG2D/CollisionShape.hpp"
 #include <functional>
-#include "ENG2D/Stopwatch.hpp"
-#include "ENG2D/RunOnce.hpp"
-#include "ENG2D/Transform.hpp"
+#include "DNG2D/Stopwatch.hpp"
+#include "DNG2D/RunOnce.hpp"
+#include "DNG2D/Transform.hpp"
 #include <box2d/base.h>
 #include <box2d/box2d.h>
-#include "ENG2D/Math.hpp"
-#include "ENG2D/Action.hpp"
-#include "ENG2D/AnimatedTexture.hpp"
+#include "DNG2D/Math.hpp"
+#include "DNG2D/Action.hpp"
+#include "DNG2D/AnimatedTexture.hpp"
 
 #include <memory>
 #include <utility>
 #include <algorithm>
 
-namespace ENG
+namespace DNG
 {
 
     class Dingus
@@ -588,7 +588,7 @@ namespace ENG
             {
                 return Vector2<float>();
             }
-            return Vector2<float>::B2D_to_ENG(b2Body_GetLinearVelocity(_bodyID));
+            return Vector2<float>::B2D_to_DNG(b2Body_GetLinearVelocity(_bodyID));
         }
         Texture *GetTexture()
         {
@@ -957,7 +957,7 @@ namespace ENG
         {
         }
 
-        // update all function called by the engine, no touchie
+        // update all function called by the Dngine, no touchie
         inline static void UpdateAll()
         {
             b2World_Step(_worldID, _worldTstep, _worldSubsteps);

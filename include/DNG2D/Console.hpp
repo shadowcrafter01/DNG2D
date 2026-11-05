@@ -1,12 +1,12 @@
-#ifndef ENG_CONSOLE_HPP
-#define ENG_CONSOLE_HPP
+#ifndef DNG_CONSOLE_HPP
+#define DNG_CONSOLE_HPP
 
 #include <iostream>
 #include <cmath>
 #include <string>
 #include <SDL3/SDL.h>
 // #include <Timer.hpp>
-#include <ENG2D/Timer.hpp>
+#include <DNG2D/Timer.hpp>
 #include <atomic>
 #include <chrono>
 #include <cstdint>
@@ -15,7 +15,7 @@
 #include <iomanip>
 #include <stdexcept>
 
-namespace ENG
+namespace DNG
 {
 
     class Console

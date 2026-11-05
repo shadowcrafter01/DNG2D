@@ -1,11 +1,11 @@
-#ifndef ENG_PEN_HPP
-#define ENG_PEN_HPP
+#ifndef DNG_PEN_HPP
+#define DNG_PEN_HPP
 
-#include <ENG2D/Camera.hpp>
-#include <ENG2D/DrawTools.hpp>
+#include <DNG2D/Camera.hpp>
+#include <DNG2D/DrawTools.hpp>
 #include "Vector.hpp"
 
-namespace ENG
+namespace DNG
 {
 
     class Pen

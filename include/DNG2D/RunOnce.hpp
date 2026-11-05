@@ -1,10 +1,10 @@
-#ifndef ENG_RUNONCE_HPP
-#define ENG_RUNONCE_HPP
+#ifndef DNG_RUNONCE_HPP
+#define DNG_RUNONCE_HPP
 
 #include <vector>
 #include <functional>
 
-namespace ENG
+namespace DNG
 {
 
     class RunOnce

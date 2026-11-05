@@ -1,11 +1,11 @@
-#ifndef ENG_TRANSFORM2_HPP
-#define ENG_TRANSFORM2_HPP
+#ifndef DNG_TRANSFORM2_HPP
+#define DNG_TRANSFORM2_HPP
 
-#include "ENG2D/Texture.hpp"
+#include "DNG2D/Texture.hpp"
 #include <box2d/box2d.h>
-#include "ENG2D/Math.hpp"
+#include "DNG2D/Math.hpp"
 
-namespace ENG
+namespace DNG
 {
     template <class T = float>
     class Transform2

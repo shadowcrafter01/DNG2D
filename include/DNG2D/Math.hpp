@@ -1,9 +1,9 @@
-#ifndef ENG_MATH_HPP
-#define ENG_MATH_HPP
+#ifndef DNG_MATH_HPP
+#define DNG_MATH_HPP
 
 #include <cmath>
 
-namespace ENG
+namespace DNG
 {
 
     class Math

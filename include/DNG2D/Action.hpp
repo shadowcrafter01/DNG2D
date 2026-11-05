@@ -1,5 +1,5 @@
-#ifndef ENG_ACTION_HPP
-#define ENG_ACTION_HPP
+#ifndef DNG_ACTION_HPP
+#define DNG_ACTION_HPP
 
 #include <SDL3/SDL.h>
 #include <vector>
@@ -12,7 +12,7 @@
 #define ACTION_ON_RELEASE 2
 #define ACTION_NOT_HELD 3
 
-namespace ENG
+namespace DNG
 {
     class Action
     {

@@ -1,10 +1,10 @@
-#ifndef ENG_ANIMATEDTEXTURE_HPP
-#define ENG_ANIMATEDTEXTURE_HPP
+#ifndef DNG_ANIMATEDTEXTURE_HPP
+#define DNG_ANIMATEDTEXTURE_HPP
 
-#include "ENG2D/Atlas.hpp"
+#include "DNG2D/Atlas.hpp"
 #include <vector>
 
-namespace ENG
+namespace DNG
 {
 
     class AnimatedTexture

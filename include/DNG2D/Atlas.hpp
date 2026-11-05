@@ -1,9 +1,9 @@
-#ifndef ENG_ATLAS_HPP
-#define ENG_ATLAS_HPP
+#ifndef DNG_ATLAS_HPP
+#define DNG_ATLAS_HPP
 
-#include "ENG2D/Texture.hpp"
+#include "DNG2D/Texture.hpp"
 
-namespace ENG
+namespace DNG
 {
     class Atlas
     {

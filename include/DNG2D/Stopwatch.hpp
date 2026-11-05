@@ -1,5 +1,5 @@
-#ifndef ENG_STOPWATCH_HPP
-#define ENG_STOPWATCH_HPP
+#ifndef DNG_STOPWATCH_HPP
+#define DNG_STOPWATCH_HPP
 
 #include <iostream>
 #include <thread>
@@ -8,7 +8,7 @@
 #include <chrono>
 #include <atomic>
 
-namespace ENG
+namespace DNG
 {
 
     class StopwatchAsync

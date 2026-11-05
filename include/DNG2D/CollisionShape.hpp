@@ -1,10 +1,10 @@
-#ifndef ENG_COLLISIONSHAPE_HPP
-#define ENG_COLLISIONSHAPE_HPP
+#ifndef DNG_COLLISIONSHAPE_HPP
+#define DNG_COLLISIONSHAPE_HPP
 
-#include "ENG2D/Vector.hpp"
+#include "DNG2D/Vector.hpp"
 #include <vector>
 
-namespace ENG
+namespace DNG
 {
 
     class CollisionShape

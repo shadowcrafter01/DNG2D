@@ -5,8 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include/**",
-                "${workspaceFolder}/include/ENG2D/**",
-                "${workspaceFolder}/include/ENG2D",
+                "${workspaceFolder}/include/DNG2D/**",
+                "${workspaceFolder}/include/DNG2D",
                 "${workspaceFolder}/include"
             ],
             "defines": [
