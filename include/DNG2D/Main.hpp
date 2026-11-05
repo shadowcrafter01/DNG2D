@@ -41,7 +41,7 @@ namespace DNG
     bool Init(const char *appname = "c++ project", const char *appversion = "0.0.0", const char *appidentifier = "com.name.Dngine")
     {
         bool flag = false;
-        Console::LogLoadStart("Initializing Dngine");
+        Console::LogLoadStart("Initializing engine");
         // metadata
         if (!SDL_SetAppMetadata(appname, appversion, appidentifier))
         {
@@ -61,7 +61,7 @@ namespace DNG
         }
         else
         {
-            Console::LogLoadEnd(true, "Dngine started!");
+            Console::LogLoadEnd(true, "engine started!");
         }
         GAMESTATE = true;
         return true;
