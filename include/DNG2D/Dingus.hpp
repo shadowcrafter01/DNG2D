@@ -29,7 +29,8 @@ namespace DNG
     class Dingus
     {
     private:
-        inline static std::vector<std::unique_ptr<Dingus>> _instances;
+        // inline static std::vector<std::unique_ptr<Dingus>> _instances;
+        inline static std::vector<Dingus *> _instances;
 
         void _Update()
         {
@@ -128,25 +129,33 @@ namespace DNG
         }
 
         inline static size_t _zeroIndex = 0;
-        static void _UpdateZeroIndex()
-        {
-            auto i = std::lower_bound(
-                _instances.begin(),
-                _instances.end(),
-                0.0f,
-                [](const std::unique_ptr<Dingus> &object, float layer)
-                {
-                    return object->_renderLayer < layer;
-                });
+        // static void _UpdateZeroIndex()
+        //{
+        //     auto i = std::lower_bound(
+        //         _instances.begin(),
+        //         _instances.end(),
+        //         0.0f,
+        //         [](const std::unique_ptr<Dingus> &object, float layer)
+        //         {
+        //             return object->_renderLayer < layer;
+        //         });
+        //     _zeroIndex = static_cast<size_t>(std::distance(_instances.begin(), i));
+        // }
 
-            _zeroIndex = static_cast<size_t>(std::distance(_instances.begin(), i));
-        }
-
+        // static void _ResortInstances()
+        //{
+        //     std::stable_sort(_instances.begin(),
+        //                      _instances.end(),
+        //                      [](const std::unique_ptr<Dingus> &a, const std::unique_ptr<Dingus> &b)
+        //                      {
+        //                          return a->_renderLayer < b->_renderLayer;
+        //                      });
+        // }
         static void _ResortInstances()
         {
             std::stable_sort(_instances.begin(),
                              _instances.end(),
-                             [](const std::unique_ptr<Dingus> &a, const std::unique_ptr<Dingus> &b)
+                             [](const Dingus *a, const Dingus *b)
                              {
                                  return a->_renderLayer < b->_renderLayer;
                              });
@@ -182,7 +191,7 @@ namespace DNG
         AnimatedTexture *_animatedTexture = nullptr;
         bool flag_animated = false;
         ColorRGBA _color = RGBA_TEXTURE_UNCHANGED;
-        float _renderLayer = 0;
+        float _renderLayer = 0.0f;
         const char *_name = "dingus";
 
         std::vector<std::function<void(Dingus *, bool)>> _functions_passKeyState;
@@ -199,130 +208,182 @@ namespace DNG
         bool _queueForDelete = false;
 
         // constructors
-        Dingus(Camera *camera, Transform2<float> _transform) : _transform{_transform}
+        // Dingus()
+        //{
+        //}
+        // Dingus(Camera *camera, Transform2<float> transform) : _camera{camera},
+        //                                                      _transform{transform}
+        //{
+        //}
+        // Dingus(Camera *camera, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera}
+        //{
+        //    _transform.position = pos;
+        //    _transform.size = size;
+        //    _transform.angle = angle;
+        //}
+        // Dingus(Camera *camera, Texture *texture, Transform2<float> _transform) : _camera{camera},
+        //                                                                         _texture{texture},
+        //                                                                         _transform{_transform}
+        //{
+        //}
+        // Dingus(Camera *camera, Texture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera},
+        //                                                                                                                                                   _texture{texture}
+        //{
+        //    if (size = Vector2<float>(0, 0))
+        //    {
+        //        _transform.size = texture->GetSize();
+        //    }
+        //    else
+        //    {
+        //        _transform.size = size;
+        //    }
+        //    _transform.position = pos;
+        //    _transform.angle = angle;
+        //}
+        // Dingus(Camera *camera, AnimatedTexture *texture, Transform2<float> _transform) : _camera{camera},
+        //                                                                                 _animatedTexture{texture},
+        //                                                                                 _transform{_transform}
+        //{
+        //    flag_animated = true;
+        //}
+        // Dingus(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera},
+        //                                                                                                                                                           _animatedTexture{texture}
+        //{
+        //    if (size = Vector2<float>(0, 0))
+        //    {
+        //        _transform.size = texture->GetSize();
+        //    }
+        //    else
+        //    {
+        //        _transform.size = size;
+        //    }
+        //    _transform.position = pos;
+        //    _transform.angle = angle;
+        //    flag_animated = true;
+        //}
+
+        Dingus *_AddSelfToInstances()
         {
-        }
-        Dingus(Camera *camera, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera}
-        {
-            _transform.position = pos;
-            _transform.size = size;
-            _transform.angle = angle;
-        }
-        Dingus(Camera *camera, Texture *texture, Transform2<float> _transform) : _camera{camera},
-                                                                                 _texture{texture},
-                                                                                 _transform{_transform}
-        {
-        }
-        Dingus(Camera *camera, Texture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera},
-                                                                                                                                                           _texture{texture}
-        {
-            if (size = Vector2<float>(0, 0))
-            {
-                _transform.size = texture->GetSize();
-            }
-            else
-            {
-                _transform.size = size;
-            }
-            _transform.position = pos;
-            _transform.angle = angle;
-        }
-        Dingus(Camera *camera, AnimatedTexture *texture, Transform2<float> _transform) : _camera{camera},
-                                                                                         _animatedTexture{texture},
-                                                                                         _transform{_transform}
-        {
-            flag_animated = true;
-        }
-        Dingus(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera},
-                                                                                                                                                                   _animatedTexture{texture}
-        {
-            if (size = Vector2<float>(0, 0))
-            {
-                _transform.size = texture->GetSize();
-            }
-            else
-            {
-                _transform.size = size;
-            }
-            _transform.position = pos;
-            _transform.angle = angle;
-            flag_animated = true;
+            // auto dngs = std::unique_ptr<Dingus>(this);
+            // dngs->_renderLayer = 0.0f;
+            // Dingus *ptr = dngs.get();
+            //_instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+            //++_zeroIndex;
+            // return ptr;
+            _instances.push_back(this);
+            return this;
         }
 
     public:
-        static Dingus *Create(Camera *camera, Transform2<float> transform)
+        Dingus()
         {
-            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, transform));
-            dngs->_renderLayer = 0.0f;
-            Dingus *ptr = dngs.get();
-            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-            ++_zeroIndex;
-            return ptr;
+            _AddSelfToInstances();
         }
-        static Dingus *Create(Camera *camera, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
+        Dingus(Transform2<float> transform)
         {
-            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, pos, angle, size));
-            dngs->_renderLayer = 0.0f;
-            Dingus *ptr = dngs.get();
-            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-            ++_zeroIndex;
-            return ptr;
+            _AddSelfToInstances()->SetTransform(transform);
         }
-        static Dingus *Create(Camera *camera, Texture *texture, Transform2<float> transform)
+        Dingus(Texture *texture)
         {
-            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, transform));
-            dngs->_renderLayer = 0.0f;
-            Dingus *ptr = dngs.get();
-            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-            ++_zeroIndex;
-            return ptr;
+            _AddSelfToInstances()->AssignTexture(texture);
         }
-        static Dingus *Create(Camera *camera, Texture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
+        Dingus(AnimatedTexture *texture)
         {
-            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
-            dngs->_renderLayer = 0.0f;
-            Dingus *ptr = dngs.get();
-            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-            ++_zeroIndex;
-            return ptr;
+            _AddSelfToInstances()->AssignTexture(texture);
         }
-        static Dingus *Create(Camera *camera, AnimatedTexture *texture, Transform2<float> transform)
+        Dingus(Camera *camera)
         {
-            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, transform));
-            dngs->_renderLayer = 0.0f;
-            Dingus *ptr = dngs.get();
-            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-            ++_zeroIndex;
-            return ptr;
+            _AddSelfToInstances()->AssignCamera(camera);
         }
-        static Dingus *Create(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
+        Dingus(Camera *camera, Texture *texture)
         {
-            auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
-            dngs->_renderLayer = 0.0f;
-            Dingus *ptr = dngs.get();
-            _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-            ++_zeroIndex;
-            return ptr;
+            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(Transform2<float>(0, 0, texture->GetSize().x, texture->GetSize().y, 0));
         }
+        Dingus(Camera *camera, Texture *texture, Transform2<float> transform)
+        {
+            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(transform);
+        }
+        // static Dingus *Create(Camera *camera, Transform2<float> transform)
+        //{
+        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, transform));
+        //     dngs->_renderLayer = 0.0f;
+        //     Dingus *ptr = dngs.get();
+        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+        //     ++_zeroIndex;
+        //     return ptr;
+        // }
+        // static Dingus *Create(Camera *camera, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
+        //{
+        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, pos, angle, size));
+        //     dngs->_renderLayer = 0.0f;
+        //     Dingus *ptr = dngs.get();
+        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+        //     ++_zeroIndex;
+        //     return ptr;
+        // }
+        // static Dingus *Create(Camera *camera, Texture *texture, Transform2<float> transform)
+        //{
+        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, transform));
+        //     dngs->_renderLayer = 0.0f;
+        //     Dingus *ptr = dngs.get();
+        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+        //     ++_zeroIndex;
+        //     return ptr;
+        // }
+        // static Dingus *Create(Camera *camera, Texture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
+        //{
+        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
+        //     dngs->_renderLayer = 0.0f;
+        //     Dingus *ptr = dngs.get();
+        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+        //     ++_zeroIndex;
+        //     return ptr;
+        // }
+        // static Dingus *Create(Camera *camera, AnimatedTexture *texture, Transform2<float> transform)
+        //{
+        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, transform));
+        //     dngs->_renderLayer = 0.0f;
+        //     Dingus *ptr = dngs.get();
+        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+        //     ++_zeroIndex;
+        //     return ptr;
+        // }
+        // static Dingus *Create(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
+        //{
+        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
+        //     dngs->_renderLayer = 0.0f;
+        //     Dingus *ptr = dngs.get();
+        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
+        //     ++_zeroIndex;
+        //     return ptr;
+        // }
         ~Dingus()
         {
             if (_physicsActive)
             {
                 b2DestroyBody(_bodyID);
                 _bodyID = b2_nullBodyId;
+                _physicsActive = false;
             }
         }
         Dingus(const Dingus &) = delete;
         Dingus &operator=(const Dingus &) = delete;
         static void Destroy(Dingus *dngs)
         {
-            for (auto i = _instances.begin(); i != _instances.end(); ++i)
+            // for (auto i = _instances.begin(); i != _instances.end(); ++i)
+            //{
+            //     if (i->get() == dngs)
+            //     {
+            //         //_instances.erase(i);
+            //         i->get()->_queueForDelete = true;
+            //         return;
+            //     }
+            // }
+            for (const auto d : _instances)
             {
-                if (i->get() == dngs)
+                if (d == dngs)
                 {
-                    //_instances.erase(i);
-                    i->get()->_queueForDelete = true;
-                    return;
+                    d->_queueForDelete = true;
                 }
             }
         }
@@ -337,6 +398,12 @@ namespace DNG
             //     }
             // }
             //_ResortInstances();
+            if (_physicsActive)
+            {
+                b2DestroyBody(_bodyID);
+                _bodyID = b2_nullBodyId;
+                _physicsActive = false;
+            }
             _queueForDelete = true;
         }
         static void DestroyAll()
@@ -441,6 +508,17 @@ namespace DNG
                 return nullptr;
             }
             _texture = tex;
+            flag_animated = false;
+            return this;
+        }
+        Dingus *AssignTexture(AnimatedTexture *tex)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            _animatedTexture = tex;
+            flag_animated = true;
             return this;
         }
         /// @brief Assigns a camera to this dingus's position transforms, position will be defined relative to this camera with or without a texture
@@ -627,13 +705,13 @@ namespace DNG
             Dingus *nearestDingus = nullptr;
             float nearestDistance = std::numeric_limits<float>::max();
 
-            for (const auto &dngs : _instances)
+            for (const auto dngs : _instances)
             {
                 float dist = Vector2<float>::Distance(position, dngs->GetPosition());
                 if (dist < nearestDistance)
                 {
                     nearestDistance = dist;
-                    nearestDingus = dngs.get();
+                    nearestDingus = dngs;
                 }
             }
             return nearestDingus;
@@ -643,45 +721,45 @@ namespace DNG
             Dingus *nearestDingus = nullptr;
             float nearestDistance = std::numeric_limits<float>::max();
 
-            for (const auto &dngs : _instances)
+            for (const auto dngs : _instances)
             {
                 float dist = Vector2<float>::Distance(position, dngs->GetPosition());
                 if ((dngs->GetName() == name) && (dist < nearestDistance))
                 {
                     nearestDistance = dist;
-                    nearestDingus = dngs.get();
+                    nearestDingus = dngs;
                 }
             }
             return nearestDingus;
         }
         static Dingus *GetByName(const char *name)
         {
-            for (const auto &dngs : _instances)
+            for (const auto dngs : _instances)
             {
                 if (dngs->GetName() == name)
                 {
-                    return dngs.get();
+                    return dngs;
                 }
             }
             return nullptr;
         }
         static Dingus *GetByIndex(int index)
         {
-            return _instances.at(index).get();
+            return _instances.at(index);
         }
         static std::vector<Dingus *> GetAllByName(const char *name)
         {
             std::vector<Dingus *> array = {};
-            for (const auto &dngs : _instances)
+            for (const auto dngs : _instances)
             {
                 if (dngs->GetName() == name)
                 {
-                    array.push_back(dngs.get());
+                    array.push_back(dngs);
                 }
             }
             return array;
         }
-        static const std::vector<std::unique_ptr<Dingus>> &GetAllInstances()
+        static const std::vector<Dingus *> &GetAllInstances()
         {
             return _instances;
         }
@@ -689,12 +767,12 @@ namespace DNG
         {
             std::vector<Dingus *> dinguses = {};
 
-            for (const auto &dngs : _instances)
+            for (const auto dngs : _instances)
             {
                 float dist = Vector2<float>::Distance(position, dngs->GetPosition());
                 if (dist <= radius)
                 {
-                    dinguses.push_back(dngs.get());
+                    dinguses.push_back(dngs);
                 }
             }
             return dinguses;
@@ -703,14 +781,14 @@ namespace DNG
         {
             std::vector<Dingus *> dinguses = {};
 
-            for (const auto &dngs : _instances)
+            for (const auto dngs : _instances)
             {
-                if (dngs.get()->GetName() == name)
+                if (dngs->GetName() == name)
                 {
                     float dist = Vector2<float>::Distance(position, dngs->GetPosition());
                     if (dist <= radius)
                     {
-                        dinguses.push_back(dngs.get());
+                        dinguses.push_back(dngs);
                     }
                 }
             }
@@ -961,18 +1039,33 @@ namespace DNG
         inline static void UpdateAll()
         {
             b2World_Step(_worldID, _worldTstep, _worldSubsteps);
-            for (auto i = _instances.rbegin(); i != _instances.rend(); ++i)
+
+            // for (unsigned int i = _instances.size(); i-- > 0; )
+            //{
+            //     Dingus *dingus = _instances.at(i);
+            //     if (dingus->_queueForDelete)
+            //     {
+            //         delete _instances[i];
+            //         _instances.erase(_instances.begin() + i);
+            //     }
+            //     else
+            //     {
+            //         if (dingus->_active)
+            //         {
+            //             dingus->_Update();
+            //         }
+            //     }
+            // }
+            for (auto i = _instances.begin(); i != _instances.end();)
             {
-                if (i->get()->_queueForDelete)
+                if ((*i)->_queueForDelete)
                 {
-                    _instances.erase((i + 1).base());
+                    (*i)->Destroy();
                 }
                 else
                 {
-                    if (i->get()->_active)
-                    {
-                        i->get()->_Update();
-                    }
+                    (*i)->_Update();
+                    ++i;
                 }
             }
         }

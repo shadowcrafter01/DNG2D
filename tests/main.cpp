@@ -1,5 +1,15 @@
 #include <DNG2D/Main.hpp>
 
+class player : public DNG::Dingus
+{
+private:
+    /* data */
+public:
+    player(/* args */)
+    {
+    }
+};
+
 DNG::Window window = DNG::Window("le wrapler rawr", DNG::Vector2(640, 480), SDL_WINDOW_RESIZABLE);
 
 DNG::Camera camera = DNG::Camera(&window);
@@ -19,13 +29,10 @@ DNG::Font font = DNG::Font("assets/fonts/Retro.Gaming.Extended.ttf", 32);
 
 void WhenBallClicked(DNG::Dingus *me)
 {
-    if (me->GetName() == "ball")
-    {
-        me->Destroy();
-    }
+    me->Destroy();
 }
 
-DNG::Dingus *nearest = nullptr;
+// DNG::Dingus *nearest = nullptr;
 
 void ResetCursor()
 {
@@ -34,10 +41,10 @@ void ResetCursor()
 DNG::RunOnce resetCursor(ResetCursor);
 void LayerAndCalcNearest()
 {
-    nearest->SetRenderLayer(0);
+    // nearest->SetRenderLayer(0);
     window.SetCustomCursor(cursor2);
-    nearest = DNG::Dingus::GetNearest(DNG::Input::Mouse::GetMouseWorldPos(&camera), "ball");
-    nearest->SetRenderLayer(1);
+    // nearest = DNG::Dingus::GetNearest(DNG::Input::Mouse::GetMouseWorldPos(&camera), "ball");
+    // nearest->SetRenderLayer(1);
 }
 DNG::RunOnce layerAndCalcNearest(LayerAndCalcNearest);
 
@@ -103,22 +110,33 @@ int main()
     window.SetCustomCursor(cursor);
     window.SetCursorScale(2.0f);
 
-    DNG::Dingus *ground = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(0, -500, 5000, chud.GetSize().y));
-    ground->AssignCollisionShape(DNG::CollisionShape::CreateBox(ground->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
-    DNG::Dingus *wall1 = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(2500, 2000, chud.GetSize().x, 5000));
-    wall1->AssignCollisionShape(DNG::CollisionShape::CreateBox(wall1->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
-    DNG::Dingus *wall2 = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(-2500, 2000, chud.GetSize().x, 5000));
-    wall2->AssignCollisionShape(DNG::CollisionShape::CreateBox(wall2->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    // DNG::Dingus *ground = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(0, -500, 5000, chud.GetSize().y));
+    // ground->AssignCollisionShape(DNG::CollisionShape::CreateBox(ground->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    // DNG::Dingus *wall1 = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(2500, 2000, chud.GetSize().x, 5000));
+    // wall1->AssignCollisionShape(DNG::CollisionShape::CreateBox(wall1->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+    // DNG::Dingus *wall2 = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(-2500, 2000, chud.GetSize().x, 5000));
+    // wall2->AssignCollisionShape(DNG::CollisionShape::CreateBox(wall2->GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+
+    DNG::Dingus ground(&camera, &chud, DNG::Transform2<float>(0, -500, 5000, chud.GetSize().y));
+    ground.AssignCollisionShape(DNG::CollisionShape::CreateBox(ground.GetTransform().size), 1, 0.25, 0.5)->SetStatic();
+
+    DNG::Dingus ball(&camera, &chud, DNG::Transform2<float>(0, 128 * 0, chud.GetSize() * DNG::Vector2<int>(1, 1)));
+    ball.AssignCollisionShape(DNG::CollisionShape::CreateBox(chud.GetSize() * DNG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
+    ball.AssignAction(WhenBallClicked, SDL_BUTTON_RIGHT, ACTION_ON_PRESS);
+
+    DNG::Dingus ball2(&camera, &chud, DNG::Transform2<float>(0, 128 * 1, chud.GetSize() * DNG::Vector2<int>(1, 1)));
+    ball2.AssignCollisionShape(DNG::CollisionShape::CreateBox(chud.GetSize() * DNG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
+    
 
     for (size_t i = 0; i < 100; ++i)
     {
-        DNG::Dingus *ball = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(0, 1280 * i, chud.GetSize() * DNG::Vector2<int>(1, 1)));
-        ball->AssignCollisionShape(DNG::CollisionShape::CreateBox(chud.GetSize() * DNG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
-        ball->SetName("ball");
-        ball->AssignAction(WhenBallClicked, SDL_BUTTON_RIGHT, ACTION_ON_PRESS);
+        // DNG::Dingus *ball = DNG::Dingus::Create(&camera, &chud, DNG::Transform2<float>(0, 1280 * i, chud.GetSize() * DNG::Vector2<int>(1, 1)));
+        // ball->AssignCollisionShape(DNG::CollisionShape::CreateBox(chud.GetSize() * DNG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
+        // ball->SetName("ball");
+        // ball->AssignAction(WhenBallClicked, SDL_BUTTON_RIGHT, ACTION_ON_PRESS);
     }
 
-    DNG::Dingus *animtest = DNG::Dingus::Create(&camera, &fire, DNG::Transform2<float>(0,0,100,100,0));
+    // DNG::Dingus *animtest = DNG::Dingus::Create(&camera, &fire, DNG::Transform2<float>(0,0,100,100,0));
 
     double value;
     file.readProperty("value", &value, 10.0);
@@ -133,10 +151,10 @@ int main()
 
         if (DNG::Input::Mouse::Left)
         {
-            nearest->ApplyForce((DNG::Input::Mouse::GetMouseWorldPos(&camera) - nearest->GetPosition()).Scale(500, true));
+            // nearest->ApplyForce((DNG::Input::Mouse::GetMouseWorldPos(&camera) - nearest->GetPosition()).Scale(500, true));
         }
         window.SetCursorScale(DNG::Vector2<float>((cosf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
-        animtest->SetPosition(DNG::Input::Mouse::GetMouseWorldPos(&camera));
+        // animtest->SetPosition(DNG::Input::Mouse::GetMouseWorldPos(&camera));
     }
 
     file.writeProperty("value", DNG::globalTimer.GetFPS());
