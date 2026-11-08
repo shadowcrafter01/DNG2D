@@ -13,7 +13,6 @@
 #include "DNG2D/Stopwatch.hpp"
 #include "DNG2D/RunOnce.hpp"
 #include "DNG2D/Transform.hpp"
-#include <box2d/base.h>
 #include <box2d/box2d.h>
 #include "DNG2D/Math.hpp"
 #include "DNG2D/Action.hpp"
@@ -33,6 +32,8 @@ namespace DNG
 
         void _Update()
         {
+            _HandleInputEvents();
+
             if (_physicsActive)
             {
                 b2WorldTransform t = b2Body_GetTransform(_bodyID);
@@ -52,78 +53,82 @@ namespace DNG
                 }
             }
 
-            bool hover = _transform.ContainsPoint(Input::Mouse::GetMouseWorldPos(_camera));
-            if (hover)
-            {
-                _HandleInputEvents();
-            }
-
             Update();
         }
 
         void _HandleInputEvents()
         {
-            _state = false;
-            for (auto in : _inputs)
+            if (_transform.ContainsPoint(Input::Mouse::GetMouseWorldPos(_camera)))
             {
-                if (in.isMouseInput)
+                MouseHover();
+
+                if (DNG::Input::Mouse::GetButtonSet().size() > 0)
                 {
-                    if (Input::Mouse::GetButtonSet().count(in.button) > 0)
+
+                }
+
+                _state = false;
+                for (auto in : _inputs)
+                {
+                    if (in.isMouseInput)
                     {
-                        _state = true;
-                        break;
+                        if (Input::Mouse::GetButtonSet().contains(in.button))
+                        {
+                            _state = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (Input::Keyboard::GetKeySet().contains(in.key))
+                        {
+                            _state = true;
+                            break;
+                        }
+                    }
+                }
+                if (_state)
+                {
+                    if (_flag_onPress)
+                    {
+                        _flag_onPress = false;
+                        for (auto f : _functions_true)
+                        {
+                            f(this);
+                        }
+                    }
+                    for (auto f : _functions_while)
+                    {
+                        f(this);
                     }
                 }
                 else
                 {
-                    if (Input::Keyboard::GetKeySet().count(in.key) > 0)
+                    _flag_onPress = true;
+                }
+                for (auto f : _functions_passKeyState)
+                {
+                    f(this, _state);
+                }
+                if (!_state)
+                {
+                    if (_flag_onRelease)
                     {
-                        _state = true;
-                        break;
+                        _flag_onRelease = false;
+                        for (auto f : _functions_false)
+                        {
+                            f(this);
+                        }
                     }
-                }
-            }
-            if (_state)
-            {
-                if (_flag_onPress)
-                {
-                    _flag_onPress = false;
-                    for (auto f : _functions_true)
-                    {
-                        f(this);
-                    }
-                }
-                for (auto f : _functions_while)
-                {
-                    f(this);
-                }
-            }
-            else
-            {
-                _flag_onPress = true;
-            }
-            for (auto f : _functions_passKeyState)
-            {
-                f(this, _state);
-            }
-            if (!_state)
-            {
-                if (_flag_onRelease)
-                {
-                    _flag_onRelease = false;
-                    for (auto f : _functions_false)
+                    for (auto f : _functions_not)
                     {
                         f(this);
                     }
                 }
-                for (auto f : _functions_not)
+                else
                 {
-                    f(this);
+                    _flag_onRelease = true;
                 }
-            }
-            else
-            {
-                _flag_onRelease = true;
             }
         }
 
@@ -149,6 +154,7 @@ namespace DNG
                              {
                                  return a->_renderLayer < b->_renderLayer;
                              });
+            _UpdateZeroIndex();
         }
 
         struct InputType
@@ -199,40 +205,40 @@ namespace DNG
 
         Dingus *_AddSelfToInstances()
         {
-            ++_zeroIndex;
             //_instances.push_back(this);
-            _instances.insert(_instances.begin() + _zeroIndex, std::move(this));
+            _instances.insert(_instances.begin() + _zeroIndex, this);
+            _zeroIndex++;
             return this;
         }
 
     public:
-        Dingus()
+        Dingus(const char *name = "dingus")
         {
-            _AddSelfToInstances();
+            _AddSelfToInstances()->SetName(name);
         }
-        Dingus(Transform2<float> transform)
+        Dingus(Transform2<float> transform, const char *name = "dingus")
         {
-            _AddSelfToInstances()->SetTransform(transform);
+            _AddSelfToInstances()->SetTransform(transform)->SetName(name);
         }
-        Dingus(Texture *texture)
+        Dingus(Texture *texture, const char *name = "dingus")
         {
-            _AddSelfToInstances()->AssignTexture(texture);
+            _AddSelfToInstances()->AssignTexture(texture)->SetName(name);
         }
-        Dingus(AnimatedTexture *texture)
+        Dingus(AnimatedTexture *texture, const char *name = "dingus")
         {
-            _AddSelfToInstances()->AssignTexture(texture);
+            _AddSelfToInstances()->AssignTexture(texture)->SetName(name);
         }
-        Dingus(Camera *camera)
+        Dingus(Camera *camera, const char *name = "dingus")
         {
-            _AddSelfToInstances()->AssignCamera(camera);
+            _AddSelfToInstances()->AssignCamera(camera)->SetName(name);
         }
-        Dingus(Camera *camera, Texture *texture)
+        Dingus(Camera *camera, Texture *texture, const char *name = "dingus")
         {
-            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(Transform2<float>(0, 0, texture->GetSize().x, texture->GetSize().y, 0));
+            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(Transform2<float>(0, 0, texture->GetSize().x, texture->GetSize().y, 0))->SetName(name);
         }
-        Dingus(Camera *camera, Texture *texture, Transform2<float> transform)
+        Dingus(Camera *camera, Texture *texture, Transform2<float> transform, const char *name = "dingus")
         {
-            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(transform);
+            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(transform)->SetName(name);
         }
         ~Dingus()
         {
@@ -297,6 +303,7 @@ namespace DNG
             b2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = b2_dynamicBody;
             bodyDef.position = _transform.position;
+            bodyDef.userData = this;
             _bodyID = b2CreateBody(_worldID, &bodyDef);
             b2ShapeDef shapeDef = b2DefaultShapeDef();
             if (collider.flag_layerByGroupIndex)
@@ -311,6 +318,7 @@ namespace DNG
             shapeDef.density = density;
             shapeDef.material.friction = friction;
             shapeDef.material.restitution = restitution;
+            shapeDef.enableContactEvents = true;
 
             switch (collisionShape.type)
             {
@@ -828,6 +836,21 @@ namespace DNG
             }
             return this;
         }
+        Dingus *ApplyForce(float Fx, float Fy)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            if (_physicsActive)
+            {
+                b2Body_ApplyForceToCenter(_bodyID, (b2Vec2){Fx, Fy}, true);
+            }
+            else
+            {
+            }
+            return this;
+        }
         Dingus *ApplyForceAt(Vector2<float> f, Vector2<float> p)
         {
             if (this == nullptr)
@@ -852,6 +875,21 @@ namespace DNG
             if (_physicsActive)
             {
                 b2Body_ApplyLinearImpulseToCenter(_bodyID, i, true);
+            }
+            else
+            {
+            }
+            return this;
+        }
+        Dingus *ApplyImpulse(float Ix, float Iy)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            if (_physicsActive)
+            {
+                b2Body_ApplyLinearImpulseToCenter(_bodyID, (b2Vec2){Ix, Iy}, true);
             }
             else
             {
@@ -897,23 +935,56 @@ namespace DNG
         virtual void MouseHover()
         {
         }
+        virtual void OnCollision(Dingus *other)
+        {
+        }
+        virtual void OnCollision()
+        {
+        }
 
-        // update all function called by the Dngine, no touchie
+        // update all function called by the engine, no touchie
         inline static void UpdateAll()
         {
+            // update box2d for all
             b2World_Step(_worldID, _worldTstep, _worldSubsteps);
 
-            for (int i = _instances.size() - 1; i >= 0; --i)
+            // get all collision data wooooo
+            b2ContactEvents collisions = b2World_GetContactEvents(_worldID);
+            for (int i = 0; i < collisions.beginCount; i++)
             {
-                if (_instances.at(i)->_queueForDelete)
+                b2ContactBeginTouchEvent *collision = &collisions.beginEvents[i];
+
+                b2BodyId box1 = b2Shape_GetBody(collision->shapeIdA);
+                b2BodyId box2 = b2Shape_GetBody(collision->shapeIdB);
+
+                Dingus *dingus1 = static_cast<Dingus*>(b2Body_GetUserData(box1));
+                Dingus *dingus2 = static_cast<Dingus*>(b2Body_GetUserData(box2));
+
+                if (dingus1 != nullptr && dingus2 != nullptr)
                 {
-                    delete _instances.at(i);
-                    _instances.erase(_instances.begin() + i);
-                    _ResortInstances();
+                    dingus1->OnCollision(dingus2);
+                    dingus2->OnCollision(dingus1);
+                    dingus1->OnCollision();
+                    dingus2->OnCollision();
+                }
+            }
+
+            // create a new list of pointers so if more are added or deleted during the input actions then the actual list of ones being updated doesnt change size
+            std::vector<Dingus *> updateList = _instances;
+
+            int i = 0;
+            for (auto d : updateList)
+            {
+                if (d->_queueForDelete)
+                {
+                    delete d;                                 // delete the actual dingus the pointer links to
+                    _instances.erase(_instances.begin() + i); // remove the pointer from the instances list
+                    _UpdateZeroIndex();
                 }
                 else
                 {
-                    _instances.at(i)->_Update();
+                    i++;
+                    d->_Update();
                 }
             }
         }
