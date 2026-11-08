@@ -29,7 +29,6 @@ namespace DNG
     class Dingus
     {
     private:
-        // inline static std::vector<std::unique_ptr<Dingus>> _instances;
         inline static std::vector<Dingus *> _instances;
 
         void _Update()
@@ -129,28 +128,19 @@ namespace DNG
         }
 
         inline static size_t _zeroIndex = 0;
-        // static void _UpdateZeroIndex()
-        //{
-        //     auto i = std::lower_bound(
-        //         _instances.begin(),
-        //         _instances.end(),
-        //         0.0f,
-        //         [](const std::unique_ptr<Dingus> &object, float layer)
-        //         {
-        //             return object->_renderLayer < layer;
-        //         });
-        //     _zeroIndex = static_cast<size_t>(std::distance(_instances.begin(), i));
-        // }
+        static void _UpdateZeroIndex()
+        {
+            auto i = std::lower_bound(
+                _instances.begin(),
+                _instances.end(),
+                0.0f,
+                [](const Dingus *object, float layer)
+                {
+                    return object->_renderLayer < layer;
+                });
+            _zeroIndex = static_cast<size_t>(std::distance(_instances.begin(), i));
+        }
 
-        // static void _ResortInstances()
-        //{
-        //     std::stable_sort(_instances.begin(),
-        //                      _instances.end(),
-        //                      [](const std::unique_ptr<Dingus> &a, const std::unique_ptr<Dingus> &b)
-        //                      {
-        //                          return a->_renderLayer < b->_renderLayer;
-        //                      });
-        // }
         static void _ResortInstances()
         {
             std::stable_sort(_instances.begin(),
@@ -207,70 +197,11 @@ namespace DNG
         bool _physicsActive = false;
         bool _queueForDelete = false;
 
-        // constructors
-        // Dingus()
-        //{
-        //}
-        // Dingus(Camera *camera, Transform2<float> transform) : _camera{camera},
-        //                                                      _transform{transform}
-        //{
-        //}
-        // Dingus(Camera *camera, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera}
-        //{
-        //    _transform.position = pos;
-        //    _transform.size = size;
-        //    _transform.angle = angle;
-        //}
-        // Dingus(Camera *camera, Texture *texture, Transform2<float> _transform) : _camera{camera},
-        //                                                                         _texture{texture},
-        //                                                                         _transform{_transform}
-        //{
-        //}
-        // Dingus(Camera *camera, Texture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera},
-        //                                                                                                                                                   _texture{texture}
-        //{
-        //    if (size = Vector2<float>(0, 0))
-        //    {
-        //        _transform.size = texture->GetSize();
-        //    }
-        //    else
-        //    {
-        //        _transform.size = size;
-        //    }
-        //    _transform.position = pos;
-        //    _transform.angle = angle;
-        //}
-        // Dingus(Camera *camera, AnimatedTexture *texture, Transform2<float> _transform) : _camera{camera},
-        //                                                                                 _animatedTexture{texture},
-        //                                                                                 _transform{_transform}
-        //{
-        //    flag_animated = true;
-        //}
-        // Dingus(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0)) : _camera{camera},
-        //                                                                                                                                                           _animatedTexture{texture}
-        //{
-        //    if (size = Vector2<float>(0, 0))
-        //    {
-        //        _transform.size = texture->GetSize();
-        //    }
-        //    else
-        //    {
-        //        _transform.size = size;
-        //    }
-        //    _transform.position = pos;
-        //    _transform.angle = angle;
-        //    flag_animated = true;
-        //}
-
         Dingus *_AddSelfToInstances()
         {
-            // auto dngs = std::unique_ptr<Dingus>(this);
-            // dngs->_renderLayer = 0.0f;
-            // Dingus *ptr = dngs.get();
-            //_instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-            //++_zeroIndex;
-            // return ptr;
-            _instances.push_back(this);
+            ++_zeroIndex;
+            //_instances.push_back(this);
+            _instances.insert(_instances.begin() + _zeroIndex, std::move(this));
             return this;
         }
 
@@ -303,60 +234,6 @@ namespace DNG
         {
             _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(transform);
         }
-        // static Dingus *Create(Camera *camera, Transform2<float> transform)
-        //{
-        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, transform));
-        //     dngs->_renderLayer = 0.0f;
-        //     Dingus *ptr = dngs.get();
-        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-        //     ++_zeroIndex;
-        //     return ptr;
-        // }
-        // static Dingus *Create(Camera *camera, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
-        //{
-        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, pos, angle, size));
-        //     dngs->_renderLayer = 0.0f;
-        //     Dingus *ptr = dngs.get();
-        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-        //     ++_zeroIndex;
-        //     return ptr;
-        // }
-        // static Dingus *Create(Camera *camera, Texture *texture, Transform2<float> transform)
-        //{
-        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, transform));
-        //     dngs->_renderLayer = 0.0f;
-        //     Dingus *ptr = dngs.get();
-        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-        //     ++_zeroIndex;
-        //     return ptr;
-        // }
-        // static Dingus *Create(Camera *camera, Texture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
-        //{
-        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
-        //     dngs->_renderLayer = 0.0f;
-        //     Dingus *ptr = dngs.get();
-        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-        //     ++_zeroIndex;
-        //     return ptr;
-        // }
-        // static Dingus *Create(Camera *camera, AnimatedTexture *texture, Transform2<float> transform)
-        //{
-        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, transform));
-        //     dngs->_renderLayer = 0.0f;
-        //     Dingus *ptr = dngs.get();
-        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-        //     ++_zeroIndex;
-        //     return ptr;
-        // }
-        // static Dingus *Create(Camera *camera, AnimatedTexture *texture, Vector2<float> pos = Vector2<float>(0, 0), float angle = 0, Vector2<float> size = Vector2<float>(0, 0))
-        //{
-        //     auto dngs = std::unique_ptr<Dingus>(new Dingus(camera, texture, pos, angle, size));
-        //     dngs->_renderLayer = 0.0f;
-        //     Dingus *ptr = dngs.get();
-        //     _instances.insert(_instances.begin() + _zeroIndex, std::move(dngs));
-        //     ++_zeroIndex;
-        //     return ptr;
-        // }
         ~Dingus()
         {
             if (_physicsActive)
@@ -370,15 +247,6 @@ namespace DNG
         Dingus &operator=(const Dingus &) = delete;
         static void Destroy(Dingus *dngs)
         {
-            // for (auto i = _instances.begin(); i != _instances.end(); ++i)
-            //{
-            //     if (i->get() == dngs)
-            //     {
-            //         //_instances.erase(i);
-            //         i->get()->_queueForDelete = true;
-            //         return;
-            //     }
-            // }
             for (const auto d : _instances)
             {
                 if (d == dngs)
@@ -389,15 +257,6 @@ namespace DNG
         }
         void Destroy()
         {
-            // for (auto i = _instances.begin(); i != _instances.end(); ++i)
-            //{
-            //     if (i->get() == this)
-            //     {
-            //         _instances.erase(i);
-            //         return;
-            //     }
-            // }
-            //_ResortInstances();
             if (_physicsActive)
             {
                 b2DestroyBody(_bodyID);
@@ -408,6 +267,10 @@ namespace DNG
         }
         static void DestroyAll()
         {
+            for (auto d : _instances)
+            {
+                d->Destroy();
+            }
             _instances.clear();
         }
 
@@ -1040,32 +903,17 @@ namespace DNG
         {
             b2World_Step(_worldID, _worldTstep, _worldSubsteps);
 
-            // for (unsigned int i = _instances.size(); i-- > 0; )
-            //{
-            //     Dingus *dingus = _instances.at(i);
-            //     if (dingus->_queueForDelete)
-            //     {
-            //         delete _instances[i];
-            //         _instances.erase(_instances.begin() + i);
-            //     }
-            //     else
-            //     {
-            //         if (dingus->_active)
-            //         {
-            //             dingus->_Update();
-            //         }
-            //     }
-            // }
-            for (auto i = _instances.begin(); i != _instances.end();)
+            for (int i = _instances.size() - 1; i >= 0; --i)
             {
-                if ((*i)->_queueForDelete)
+                if (_instances.at(i)->_queueForDelete)
                 {
-                    (*i)->Destroy();
+                    delete _instances.at(i);
+                    _instances.erase(_instances.begin() + i);
+                    _ResortInstances();
                 }
                 else
                 {
-                    (*i)->_Update();
-                    ++i;
+                    _instances.at(i)->_Update();
                 }
             }
         }
