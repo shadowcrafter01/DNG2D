@@ -17,6 +17,7 @@
 #include "DNG2D/Math.hpp"
 #include "DNG2D/Action.hpp"
 #include "DNG2D/AnimatedTexture.hpp"
+#include "DNG2D/Timer.hpp"
 
 #include <memory>
 #include <utility>
@@ -45,11 +46,12 @@ namespace DNG
             {
                 if (flag_animated)
                 {
-                    DrawTools::DrawAnimatedTexture(_camera, _animatedTexture, _transform.position, 1, _transform.size, _transform.angle, _color);
+                    _frame += _frameRate * _timer.GetDelta();
+                    DrawTools::DrawAnimatedTexture(_camera, _animatedTexture, _transform.position, (int)_frame, _transform.size / _animatedTexture->GetSize(), _transform.angle, _color);
                 }
                 else
                 {
-                    DrawTools::DrawTexture(_camera, _texture, _transform.position, _transform.size, _transform.angle, _color);
+                    DrawTools::DrawTexture(_camera, _texture, _transform.position, _transform.size / _texture->GetSize(), _transform.angle, _color);
                 }
             }
 
@@ -186,6 +188,9 @@ namespace DNG
         Texture *_texture = nullptr;
         AnimatedTexture *_animatedTexture = nullptr;
         bool flag_animated = false;
+        float _frame = 0.0f;
+        float _frameRate = 0.0f;
+        inline static Timer _timer;
         ColorRGBA _color = RGBA_TEXTURE_UNCHANGED;
         float _renderLayer = 0.0f;
         const char *_name = "dingus";
@@ -237,6 +242,14 @@ namespace DNG
             _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(Transform2<float>(0, 0, texture->GetSize().x, texture->GetSize().y, 0))->SetName(name);
         }
         Dingus(Camera *camera, Texture *texture, Transform2<float> transform, const char *name = "dingus")
+        {
+            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(transform)->SetName(name);
+        }
+        Dingus(Camera *camera, AnimatedTexture *texture, const char *name = "dingus")
+        {
+            _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(Transform2<float>(0, 0, texture->GetSize().x, texture->GetSize().y, 0))->SetName(name);
+        }
+        Dingus(Camera *camera, AnimatedTexture *texture, Transform2<float> transform, const char *name = "dingus")
         {
             _AddSelfToInstances()->AssignCamera(camera)->AssignTexture(texture)->SetTransform(transform)->SetName(name);
         }
@@ -811,6 +824,25 @@ namespace DNG
             _color = color;
             return this;
         }
+        Dingus *SetFramerate(float framerate = 0.0f)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            _frameRate = framerate;
+            return this;
+        }
+        Dingus *SetFrame(int frame = 0)
+        {
+            if (this == nullptr)
+            {
+                return nullptr;
+            }
+            _frame = frame;
+            return this;
+        }
+        
         static void SetWorldGravity(Vector2<float> v)
         {
             b2World_SetGravity(_worldID, v);
@@ -945,6 +977,8 @@ namespace DNG
         // update all function called by the engine, no touchie
         inline static void UpdateAll()
         {
+            _timer.Update();
+
             // update box2d for all
             b2World_Step(_worldID, _worldTstep, _worldSubsteps);
 
@@ -957,8 +991,8 @@ namespace DNG
                 b2BodyId box1 = b2Shape_GetBody(collision->shapeIdA);
                 b2BodyId box2 = b2Shape_GetBody(collision->shapeIdB);
 
-                Dingus *dingus1 = static_cast<Dingus*>(b2Body_GetUserData(box1));
-                Dingus *dingus2 = static_cast<Dingus*>(b2Body_GetUserData(box2));
+                Dingus *dingus1 = static_cast<Dingus *>(b2Body_GetUserData(box1));
+                Dingus *dingus2 = static_cast<Dingus *>(b2Body_GetUserData(box2));
 
                 if (dingus1 != nullptr && dingus2 != nullptr)
                 {

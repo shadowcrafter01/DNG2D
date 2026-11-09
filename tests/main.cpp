@@ -50,8 +50,8 @@ DNG::Texture cursor = DNG::Texture(&window, "assets/textures/cursor.png");
 DNG::Texture cursor2 = DNG::Texture(&window, "assets/textures/cursorpressed.png");
 DNG::Texture chud = DNG::Texture(&window, "assets/textures/chud.png");
 
-DNG::Atlas fireAtlas = DNG::Atlas::Create(&window, "assets/textures/fire.png");
-
+DNG::Texture firetex = DNG::Texture(&window, "assets/textures/fire.png");
+DNG::Atlas fireAtlas = DNG::Atlas(&firetex);
 DNG::AnimatedTexture fire = DNG::AnimatedTexture(&fireAtlas, 8, 1);
 
 DNG::File file = DNG::File("test.json");
@@ -154,12 +154,14 @@ int main()
 
     for (size_t i = 0; i < 2; ++i)
     {
-        DNG::Dingus *ball = new DNG::Dingus(&camera, &chud, DNG::Transform2<float>(0, 1280 * 0, chud.GetSize() * DNG::Vector2<int>(1, 1)));
+        DNG::Dingus *ball = new DNG::Dingus(&camera, &fire, DNG::Transform2<float>(0, 1280 * i, chud.GetSize()));
         ball->AssignCollisionShape(DNG::CollisionShape::CreateBox(chud.GetSize() * DNG::Vector2<int>(1, 1)), 1, 0.25, 0.5);
         ball->SetName("ball");
+        ball->SetFramerate(24);
     }
 
-    // DNG::Dingus *animtest = DNG::Dingus::Create(&camera, &fire, DNG::Transform2<float>(0,0,100,100,0));
+    //DNG::Dingus *animtest = new DNG::Dingus(&camera, &fire, DNG::Transform2<float>(0,0,100,100,0));
+    //animtest->SetFramerate(12);
 
     double value;
     file.readProperty("value", &value, 10.0);
@@ -178,7 +180,7 @@ int main()
         }
         window.SetCursorScale(DNG::Vector2<float>((cosf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
 
-        // animtest->SetPosition(DNG::Input::Mouse::GetMouseWorldPos(&camera));
+        //animtest->SetPosition(DNG::Input::Mouse::GetMouseWorldPos(&camera));
     }
 
     file.writeProperty("value", DNG::globalTimer.GetFPS());
