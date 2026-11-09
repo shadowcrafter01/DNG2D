@@ -29,6 +29,7 @@
 #include "DNG2D/Math.hpp"
 #include "DNG2D/Transform.hpp"
 #include "DNG2D/Action.hpp"
+#include "DNG2D/Random.hpp"
 
 namespace DNG
 {
@@ -54,6 +55,8 @@ namespace DNG
             Console::LogLoadEnd(false, "Error initializing SDL3");
             return false;
         }
+
+        Random::Init();
 
         if (flag)
         {

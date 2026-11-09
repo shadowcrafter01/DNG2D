@@ -168,13 +168,9 @@ int main()
 
     camera.SetZoom(0.1);
 
-    float trackSeconds = 0.0f;
-
     while (DNG::Update())
     {
         DNG::Dingus::SetWorldTimeStep(DNG::globalTimer.GetDelta() * 10);
-
-        trackSeconds += DNG::globalTimer.GetDelta();
 
         if (DNG::Input::Mouse::Left)
         {
@@ -184,20 +180,6 @@ int main()
 
         // animtest->SetPosition(DNG::Input::Mouse::GetMouseWorldPos(&camera));
 
-        // if (trackSeconds > 0.1f)
-        //{
-        //     trackSeconds = 0.0f;
-        //     DNG::Dingus *d = new DNG::Dingus(&camera, &chud, DNG::Transform2<float>({0.0f, 0.0f}, chud.GetSize()), "memleaktest");
-        //     d->AssignCollisionShape(DNG::CollisionShape::CreateBox(chud.GetSize()));
-        //     d->ApplyImpulse(10000000.0f, 10000000.0f);
-        // }
-        // for (auto d : DNG::Dingus::GetAllByName("memleaktest"))
-        //{
-        //     if (d->GetPosition().y < -10.0f)
-        //     {
-        //         d->Destroy();
-        //     }
-        // }
     }
 
     file.writeProperty("value", DNG::globalTimer.GetFPS());
