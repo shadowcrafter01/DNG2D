@@ -29,7 +29,7 @@ public:
 
         // boom.Play(DNG::Math::Clamp(relVel/50.0f, 0.0f, 1.0f));
         if (relVel > 15.0f)
-            DNG::Audio::Play(&drop, DNG::Math::Clamp(relVel / 100.0f, 0.0f, 1.0f));
+            DNG::Audio::Play(&drop, DNG::Math::Clamp(relVel / 100.0f, 0.0f, 1.0f), DNG::Random::GetNext(0.75f, 1.25f));
     }
 
     void MouseDown() override
@@ -179,7 +179,6 @@ int main()
         window.SetCursorScale(DNG::Vector2<float>((cosf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f, (sinf(DNG::globalTimer.GetSecond() * 10.0f) * 0.5f) + 1.0f));
 
         // animtest->SetPosition(DNG::Input::Mouse::GetMouseWorldPos(&camera));
-
     }
 
     file.writeProperty("value", DNG::globalTimer.GetFPS());
