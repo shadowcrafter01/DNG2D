@@ -64,7 +64,7 @@ namespace DNG
 
                 if (DNG::Input::Mouse::GetButtonSet().size() > 0)
                 {
-
+                    MouseDown();
                 }
 
                 _state = false;

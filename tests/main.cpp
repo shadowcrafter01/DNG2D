@@ -1,6 +1,7 @@
 #include <DNG2D/Main.hpp>
 
 DNG::Audio boom = DNG::Audio("assets/sounds/vine-boom.mp3");
+DNG::Audio drop = DNG::Audio("assets/sounds/drop.wav");
 
 class thing : public DNG::Dingus
 {
@@ -24,12 +25,16 @@ public:
 
     void OnCollision(Dingus *other) override
     {
-        boom.Play();
+        float relVel = (GetVelocity() - other->GetVelocity()).Magnitude();
+
+        // boom.Play(DNG::Math::Clamp(relVel/50.0f, 0.0f, 1.0f));
+        if (relVel > 15.0f)
+            DNG::Audio::Play(&drop, DNG::Math::Clamp(relVel / 100.0f, 0.0f, 1.0f));
     }
 
-    void MouseDown(Uint8 button) override
+    void MouseDown() override
     {
-        if (button == SDL_BUTTON_RIGHT)
+        if (DNG::Input::Mouse::Right)
         {
             Destroy();
         }
