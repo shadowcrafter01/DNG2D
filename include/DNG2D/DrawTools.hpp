@@ -58,13 +58,13 @@ namespace DNG
         }
 
     public:
-        static void DrawTexture(Camera *camera, Texture *texture, Vector2<float> position, float size = 1, Vector2<float> scale = Vector2<float>(1.0f, 1.0f), float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
+        static void DrawTexture(Camera *camera, Texture *texture, Vector2<float> position, Vector2<float> size = Vector2<float>(1.0f, 1.0f), float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
         {
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.w = size * camera->GetZoom() * texture->GetSize().x * scale.x;
-            r.h = size * camera->GetZoom() * texture->GetSize().y * scale.y;
+            r.w = size.x * camera->GetZoom();
+            r.h = size.y * camera->GetZoom();
             r.x = pos.x - (r.w / 2);
             r.y = pos.y - (r.h / 2);
 
@@ -78,32 +78,12 @@ namespace DNG
                 // SDL_DestroyTexture(texture->pointer);
             }
         }
-        static void DrawTexture(Camera *camera, Texture *texture, Vector2<float> position, Vector2<float> size, float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
-        {
-
-            Vector2<float> pos = projectToCamera(camera, position);
-            SDL_FRect r;
-            r.w = size.x * camera->GetZoom(); // * texture->size.x;
-            r.h = size.y * camera->GetZoom(); // * texture->size.y;
-            r.x = pos.x - (r.w / 2);
-            r.y = pos.y - (r.h / 2);
-
-            if (onscreen(camera, &r))
-            {
-                // texture->pointer = SDL_CreateTextureFromSurface(camera->window->renderer, texture->surface);
-                SDL_SetTextureBlendMode(texture->GetPointer(), SDL_BLENDMODE_BLEND);
-                SDL_SetTextureColorMod(texture->GetPointer(), color.red, color.green, color.blue);
-                SDL_SetTextureAlphaMod(texture->GetPointer(), color.alpha);
-                SDL_RenderTextureRotated(texture->GetWindow()->GetRenderer(), texture->GetPointer(), NULL, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
-                // SDL_DestroyTexture(texture->pointer);
-            }
-        }
-        static void DrawTexture(Texture *texture, Vector2<float> position, Vector2<float> size, float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
+        static void DrawTexture(Texture *texture, Vector2<float> position, Vector2<float> size = Vector2<float>(1.0f, 1.0f), float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
         {
 
             SDL_FRect r;
-            r.w = size.x; // * texture->size.x;
-            r.h = size.y; // * texture->size.y;
+            r.w = size.x;
+            r.h = size.y;
             r.x = position.x - (r.w / 2);
             r.y = position.y - (r.h / 2);
             Vector2<float> vr(r.x, r.y);
@@ -113,28 +93,14 @@ namespace DNG
             SDL_SetTextureAlphaMod(texture->GetPointer(), color.alpha);
             SDL_RenderTextureRotated(texture->GetWindow()->GetRenderer(), texture->GetPointer(), NULL, &r, angle, NULL, SDL_FLIP_NONE);
         }
-        static void DrawTexture(Texture *texture, Vector2<float> position, float size = 1.0f, Vector2<float> scale = Vector2<float>(1.0f, 1.0f), float angle = 0.0f, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
-        {
 
-            SDL_FRect r;
-            r.w = size * texture->GetSize().x * scale.x;
-            r.h = size * texture->GetSize().y * scale.y;
-            r.x = position.x - (r.w / 2);
-            r.y = position.y - (r.h / 2);
-
-            SDL_SetTextureBlendMode(texture->GetPointer(), SDL_BLENDMODE_BLEND);
-            SDL_SetTextureColorMod(texture->GetPointer(), color.red, color.green, color.blue);
-            SDL_SetTextureAlphaMod(texture->GetPointer(), color.alpha);
-            SDL_RenderTextureRotated(texture->GetWindow()->GetRenderer(), texture->GetPointer(), NULL, &r, angle, NULL, SDL_FLIP_NONE);
-        }
-
-        static void DrawAtlas(Camera *camera, Atlas *atlas, Vector2<float> position, float size = 1, float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
+        static void DrawAtlas(Camera *camera, Atlas *atlas, Vector2<float> position, Vector2<float> size = Vector2<float>(1.0f, 1.0f), float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
         {
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.h = size * camera->GetZoom() * atlas->GetTexture()->GetSize().x;
-            r.w = size * camera->GetZoom() * atlas->GetTexture()->GetSize().y;
+            r.h = size.x * camera->GetZoom();
+            r.w = size.y * camera->GetZoom();
             r.x = pos.x - (r.w / 2);
             r.y = pos.y - (r.h / 2);
             Vector2<float> vr(r.x, r.y);
@@ -153,38 +119,7 @@ namespace DNG
                 SDL_RenderTextureRotated(atlas->GetTexture()->GetWindow()->GetRenderer(), atlas->GetTexture()->GetPointer(), &s, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
             }
         }
-        //static void DrawAnimatedTexture(Camera *camera, AnimatedTexture *animatedTexture, Vector2<float> position, int frame = -1, float size = 1, float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
-        //{
-        //    if (frame == -1)
-        //    {
-        //        frame = animatedTexture->GetCurrentFrame();
-        //    }
-        //    else
-        //    {
-        //        frame = frame % animatedTexture->GetFrameCount();
-        //    }
 
-        //    Vector2<float> pos = projectToCamera(camera, position);
-        //    SDL_FRect r;
-        //    r.w = size * camera->GetZoom() * animatedTexture->GetFrameWidth();
-        //    r.h = size * camera->GetZoom() * animatedTexture->GetAtlas()->GetTexture()->GetSize().y;
-        //    r.x = pos.x - (r.w / 2);
-        //    r.y = pos.y - (r.h / 2);
-
-        //    if (onscreen(camera, &r))
-        //    {
-        //        SDL_FRect s;
-        //        s.w = animatedTexture->GetFrameWidth();
-        //        s.h = animatedTexture->GetAtlas()->GetTexture()->GetSize().y;
-        //        s.x = animatedTexture->GetFrameWidth() * frame;
-        //        s.y = 0;
-
-        //        SDL_SetTextureBlendMode(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), SDL_BLENDMODE_BLEND);
-        //        SDL_SetTextureColorMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.red, color.green, color.blue);
-        //        SDL_SetTextureAlphaMod(animatedTexture->GetAtlas()->GetTexture()->GetPointer(), color.alpha);
-        //        SDL_RenderTextureRotated(animatedTexture->GetAtlas()->GetTexture()->GetWindow()->GetRenderer(), animatedTexture->GetAtlas()->GetTexture()->GetPointer(), &s, &r, angle + camera->GetAngle(), NULL, SDL_FLIP_NONE);
-        //    }
-        //}
         static void DrawAnimatedTexture(Camera *camera, AnimatedTexture *animatedTexture, Vector2<float> position, int frame = -1, Vector2<float> size = Vector2<float>(1.0, 1.0), float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
         {
             if (frame == -1)
@@ -198,8 +133,8 @@ namespace DNG
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;
-            r.w = size.x * camera->GetZoom() * animatedTexture->GetFrameWidth();
-            r.h = size.y * camera->GetZoom() * animatedTexture->GetAtlas()->GetTexture()->GetSize().y;
+            r.w = size.x * camera->GetZoom();
+            r.h = size.y * camera->GetZoom();
             r.x = pos.x - (r.w / 2);
             r.y = pos.y - (r.h / 2);
 

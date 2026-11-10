@@ -14,6 +14,13 @@ public:
         SetTransform(transform);
         AssignCollisionShape(DNG::CollisionShape::CreateBox(texture->GetSize()));
     }
+    thing(DNG::Camera *camera, DNG::AnimatedTexture *texture, DNG::Transform2<float> transform)
+    {
+        AssignCamera(camera);
+        AssignTexture(texture);
+        SetTransform(transform);
+        AssignCollisionShape(DNG::CollisionShape::CreateBox(texture->GetSize()));
+    }
 
     void Update() override
     {
@@ -71,7 +78,8 @@ void LayerAndCalcNearest()
 void MouseLeft()
 {
     window.SetCustomCursor(cursor2);
-    thing *newDing = new thing(&camera, &chud, DNG::Transform2<float>(DNG::Input::Mouse::GetMouseWorldPos(&camera), chud.GetSize()));
+    thing *newDing = new thing(&camera, &fire, DNG::Transform2<float>(DNG::Input::Mouse::GetMouseWorldPos(&camera), chud.GetSize()));
+    newDing->SetFramerate(24);
 }
 void MouseLeftUp()
 {

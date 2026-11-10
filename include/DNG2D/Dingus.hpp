@@ -47,11 +47,11 @@ namespace DNG
                 if (flag_animated)
                 {
                     _frame += _frameRate * _timer.GetDelta();
-                    DrawTools::DrawAnimatedTexture(_camera, _animatedTexture, _transform.position, (int)_frame, _transform.size / _animatedTexture->GetSize(), _transform.angle, _color);
+                    DrawTools::DrawAnimatedTexture(_camera, _animatedTexture, _transform.position, (int)_frame, _transform.size, _transform.angle, _color);
                 }
                 else
                 {
-                    DrawTools::DrawTexture(_camera, _texture, _transform.position, _transform.size / _texture->GetSize(), _transform.angle, _color);
+                    DrawTools::DrawTexture(_camera, _texture, _transform.position, _transform.size, _transform.angle, _color);
                 }
             }
 
