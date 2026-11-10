@@ -13,14 +13,14 @@ namespace DNG
     private:
         /* data */
     public:
-        Transform2(T x = 0, T y = 0, T w = 1, T h = 1, T a = 0) : position{Vector2<T>(x, y)},
-                                                                  size{Vector2<T>(w, h)},
-                                                                  angle{a}
+        Transform2(T x, T y, T w, T h, T a = 0) : position{Vector2<T>(x, y)},
+                                                  size{Vector2<T>(w, h)},
+                                                  angle{a}
         {
         }
-        Transform2(Vector2<T> pos, Vector2<T> size, T angle = 0) : position{pos},
-                                                                   size{size},
-                                                                   angle{angle}
+        Transform2(Vector2<T> pos = Vector2<T>(0.0, 0.0), Vector2<T> size = Vector2<T>(1.0, 1.0), T angle = 0) : position{pos},
+                                                                                                                 size{size},
+                                                                                                                 angle{angle}
         {
         }
         Transform2(Vector2<T> pos, T w, T h, T angle = 0) : position{pos},
