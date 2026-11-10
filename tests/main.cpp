@@ -53,12 +53,12 @@ DNG::Window *window = new DNG::Window("le wrapler rawr", DNG::Vector2(640, 480),
 
 DNG::Camera *camera = new DNG::Camera(window);
 
-DNG::Texture *test = new DNG::Texture(window, "assets/textures/billGates.bmp");
-DNG::Texture *cursor = new DNG::Texture(window, "assets/textures/cursor.png");
-DNG::Texture *cursor2 = new DNG::Texture(window, "assets/textures/cursorpressed.png");
-DNG::Texture *chud = new DNG::Texture(window, "assets/textures/chud.png");
+DNG::Texture *test = new DNG::Texture(camera, "assets/textures/billGates.bmp");
+DNG::Texture *cursor = new DNG::Texture(camera, "assets/textures/cursor.png");
+DNG::Texture *cursor2 = new DNG::Texture(camera, "assets/textures/cursorpressed.png");
+DNG::Texture *chud = new DNG::Texture(camera, "assets/textures/chud.png");
 
-DNG::Texture *firetex = new DNG::Texture(window, "assets/textures/fire.png");
+DNG::Texture *firetex = new DNG::Texture(camera, "assets/textures/fire.png");
 DNG::Atlas *fireAtlas = new DNG::Atlas(firetex);
 DNG::AnimatedTexture *fire = new DNG::AnimatedTexture(fireAtlas, 8, 1);
 

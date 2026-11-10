@@ -37,7 +37,7 @@ namespace DNG
                 return;
             }
             _size = Vector2<int>(_surface->w, _surface->h);
-            _pointer = SDL_CreateTextureFromSurface(window->GetRenderer(), _surface);
+            _pointer = SDL_CreateTextureFromSurface(_window->GetRenderer(), _surface);
             if (_pointer == NULL)
             {
                 Console::LogLoadEnd(false);

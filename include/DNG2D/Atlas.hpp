@@ -13,9 +13,9 @@ namespace DNG
         SDL_FRect _rect;
     
     public:
-        Atlas(Window *window, const char *path)
+        Atlas(Camera *camera, const char *path)
         {
-            Texture texture = Texture(window, path);
+            Texture texture = Texture(camera, path);
             _texture = &texture;
 
             Console::LogInfo((std::string) "Assigned Texture [" + path + "] to atlas", " -LOAD : ");
@@ -29,9 +29,9 @@ namespace DNG
         {
         }
 
-        static Atlas Create(Window *window, const char *path)
+        static Atlas Create(Camera *camera, const char *path)
         {
-            Atlas atlas(window, path);
+            Atlas atlas(camera, path);
             return atlas;
         }
         static Atlas Create(Texture *texture)
