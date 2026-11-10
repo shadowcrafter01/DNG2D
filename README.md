@@ -1,6 +1,6 @@
 # DNG2D
 
-Dingus 2d game Dngine utilizing SDL3 and box2d
+Dingus 2d game engine utilizing SDL3 and box2d
 
 includes SDL3's satellite libraries (image, ttf, mixer, etc...) and nlohmann's json library as well
 
