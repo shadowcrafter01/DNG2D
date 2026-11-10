@@ -25,11 +25,12 @@ namespace DNG
             }
         };
 
-        static std::vector<Window *> &instances()
-        {
-            static std::vector<Window *> v;
-            return v;
-        }
+        //static std::vector<Window *> &instances()
+        //{
+        //    static std::vector<Window *> v;
+        //    return v;
+        //}
+        inline static std::vector<Window *> _instances = {};
 
         SDL_Window *_pointer;
         Renderer _renderer;
@@ -65,15 +66,26 @@ namespace DNG
                 Console::LogLoadEnd(false);
             }
             SDL_SetDefaultTextureScaleMode(_renderer, SDL_SCALEMODE_PIXELART);
-            instances().push_back(this);
+            _instances.push_back(this);
             Console::LogLoadEnd(true);
         }
-        //    ~Window()
-        //    {
-        //        //std::vector<Window*> &v = instances();
-        //        if (renderer._pointer) SDL_DestroyRenderer(renderer);
-        //        if (_pointer) SDL_DestroyWindow(_pointer);
-        //    }
+        ~Window()
+        {
+            if (_renderer._pointer)
+                SDL_DestroyRenderer(_renderer);
+            if (_pointer)
+                SDL_DestroyWindow(_pointer);
+            
+            int i = 0;
+            for (auto w : _instances)
+            {
+                if (this == w)
+                {
+                    _instances.erase(_instances.begin() + i);
+                }
+                i++;
+            }
+        }
 
         // Window(const Window&) = delete;
         // Window& operator=(const Window&) = delete;
@@ -257,7 +269,7 @@ namespace DNG
                 SDL_RenderTexture(_renderer, _cursor, NULL, &r);
             }
             SDL_SetRenderTarget(_renderer, NULL);
-            SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+            SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 0);
             // SDL_SetRenderScale(renderer, 1, 1);
             SDL_GetWindowSizeInPixels(_pointer, &_size.x, &_size.y);
             _center = Vector2<int>(_size.x / 2, _size.y / 2);
@@ -266,14 +278,14 @@ namespace DNG
         }
         static void UpdateAll()
         {
-            for (Window *w : instances())
+            for (auto w : _instances)
             {
                 w->Update();
             }
         }
-        static std::vector<Window *> &GetAllWindows()
+        static std::vector<Window *> GetAllWindows()
         {
-            return instances();
+            return _instances;
         }
     };
 

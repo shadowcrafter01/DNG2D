@@ -22,6 +22,9 @@ namespace DNG
         {
             _frameCount = atlas->GetTexture()->GetSize().x / frame_width;
         }
+        ~AnimatedTexture()
+        {
+        }
 
         int GetFrameCount()
         {

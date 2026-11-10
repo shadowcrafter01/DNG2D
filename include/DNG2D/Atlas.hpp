@@ -25,6 +25,9 @@ namespace DNG
             _texture = texture;
             Console::LogInfo((std::string) "Assigned Texture [" + texture->GetFilePath() + "] to atlas", " -LOAD : ");
         }
+        ~Atlas()
+        {
+        }
 
         static Atlas Create(Window *window, const char *path)
         {

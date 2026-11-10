@@ -21,6 +21,9 @@ namespace DNG
                                                                                                                       _angle{angle}
         {
         }
+        ~Camera()
+        {
+        }
         
         Vector2<float> GetPosition()
         {

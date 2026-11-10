@@ -47,6 +47,10 @@ namespace DNG
                 if (flag_animated)
                 {
                     _frame += _frameRate * _timer.GetDelta();
+                    if (_frame > _animatedTexture->GetFrameCount())
+                    {
+                        _frame -= _animatedTexture->GetFrameCount();
+                    }
                     DrawTools::DrawAnimatedTexture(_camera, _animatedTexture, _transform.position, (int)_frame, _transform.size, _transform.angle, _color);
                 }
                 else

@@ -128,7 +128,8 @@ namespace DNG
             }
             else
             {
-                frame = frame % animatedTexture->GetFrameCount();
+                if (frame > animatedTexture->GetFrameCount())
+                    frame = frame % animatedTexture->GetFrameCount();
             }
 
             Vector2<float> pos = projectToCamera(camera, position);

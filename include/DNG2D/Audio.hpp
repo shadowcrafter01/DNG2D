@@ -78,6 +78,9 @@ namespace DNG
             Console::LogLoadEnd(true);
             _state = true;
         }
+        ~Audio()
+        {
+        }
 
         /// @brief starts the sound clip, if it was already playing then restarts, call the static play if you want to overlap multiple of the same audio clip
         /// @param volume volume duh

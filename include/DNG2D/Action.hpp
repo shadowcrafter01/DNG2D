@@ -159,6 +159,9 @@ namespace DNG
             AssignFunction(f, flag);
             _instances.push_back(this);
         }
+        ~Action()
+        {
+        }
 
         void AssignFunction(std::function<void()> f, int flag = ACTION_WHILE_HELD)
         {

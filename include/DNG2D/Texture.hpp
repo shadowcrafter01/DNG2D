@@ -14,6 +14,7 @@ namespace DNG
     class Texture
     {
     private:
+        Camera *_camera;
         Window *_window;
         const char *_path;
         SDL_Texture *_pointer;
@@ -22,10 +23,12 @@ namespace DNG
         Vector2<int> _size;
 
     public:
-        Texture(Window *window, const char *path) : _path{path},
-                                                    _window{window}
+        Texture(Camera *camera, const char *path) : _path{path},
+                                                    _camera{camera}
         {
             Console::LogLoadStart((std::string) "Loading texture [" + path + "]");
+
+            _window = _camera->GetWindow();
 
             _surface = IMG_Load(path);
             if (_surface == NULL)
@@ -43,10 +46,14 @@ namespace DNG
             Console::LogLoadEnd(true);
             _state = true;
         }
-        
+
         Window *GetWindow()
         {
             return _window;
+        }
+        Camera *GetCamera()
+        {
+            return _camera;
         }
         const char *GetFilePath()
         {
