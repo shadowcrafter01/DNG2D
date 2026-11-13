@@ -25,16 +25,17 @@ namespace DNG
             }
         };
 
-        //static std::vector<Window *> &instances()
+        // static std::vector<Window *> &instances()
         //{
-        //    static std::vector<Window *> v;
-        //    return v;
-        //}
+        //     static std::vector<Window *> v;
+        //     return v;
+        // }
         inline static std::vector<Window *> _instances = {};
+        inline static int _activeWindows = 0;
 
         SDL_Window *_pointer;
         Renderer _renderer;
-        TTF_TextEngine *_ttfDngine;
+        TTF_TextEngine *_ttfEngine;
         SDL_Texture *_cursor;
         Vector2<int> _cursorSize = Vector2<int>(0, 0);
         Vector2<float> _cursorScale = Vector2<int>(1, 1);
@@ -42,7 +43,9 @@ namespace DNG
         const char *_title;
         Vector2<int> _size;
         Vector2<int> _center;
+        Vector2<int> _position;
         SDL_WindowFlags _flags;
+        bool _state = true;
 
     public:
         Window(const char *title = "DNG2D", Vector2<int> size = Vector2<int>(640, 480), SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE) : _title{title},
@@ -60,13 +63,14 @@ namespace DNG
                 Console::LogLoadEnd(false);
                 return;
             }
-            _ttfDngine = TTF_CreateRendererTextEngine(_renderer);
-            if (_ttfDngine == NULL)
+            _ttfEngine = TTF_CreateRendererTextEngine(_renderer);
+            if (_ttfEngine == NULL)
             {
                 Console::LogLoadEnd(false);
             }
             SDL_SetDefaultTextureScaleMode(_renderer, SDL_SCALEMODE_PIXELART);
             _instances.push_back(this);
+            _activeWindows++;
             Console::LogLoadEnd(true);
         }
         ~Window()
@@ -75,20 +79,48 @@ namespace DNG
                 SDL_DestroyRenderer(_renderer);
             if (_pointer)
                 SDL_DestroyWindow(_pointer);
-            
+
             int i = 0;
             for (auto w : _instances)
             {
                 if (this == w)
                 {
                     _instances.erase(_instances.begin() + i);
+                    _activeWindows--;
                 }
                 i++;
             }
+            _pointer == nullptr;
         }
 
-        // Window(const Window&) = delete;
-        // Window& operator=(const Window&) = delete;
+        /// @brief deletes and fully removes this window, careful with calling values from this window after removing it, run Hide() instead perchance?
+        void Destroy()
+        {
+            delete this;
+        }
+        /// @brief similar to destroying a window but it doesnt actually delete anything, the window can be brought back with Show() (closing a window runs this)
+        void Hide()
+        {
+            _state = false;
+            _activeWindows--;
+            SDL_HideWindow(_pointer);
+        }
+        void Show()
+        {
+            _state - true;
+            _activeWindows++;
+            SDL_ShowWindow(_pointer);
+        }
+
+        static void PurgeInactiveWindows()
+        {
+            for (auto w : _instances)
+            {
+                if (!w->GetState())
+                    w->Destroy();
+            }
+        }
+
 
         SDL_Window *GetPointer()
         {
@@ -100,11 +132,15 @@ namespace DNG
         }
         TTF_TextEngine *GetTextEngine()
         {
-            return _ttfDngine;
+            return _ttfEngine;
         }
         Vector2<int> GetSize()
         {
             return _size;
+        }
+        Vector2<int> GetPosition()
+        {
+            return _position;
         }
         Vector2<int> GetCenter()
         {
@@ -113,6 +149,30 @@ namespace DNG
         SDL_WindowFlags GetFlags()
         {
             return _flags;
+        }
+        bool GetState()
+        {
+            return _state;
+        }
+        /// @brief gets all active windows
+        /// @param force switch to include inactive windows as well
+        /// @return returns a vector of all active window references
+        static std::vector<Window *> GetAllWindows(bool force = false)
+        {
+            if (force)
+            {
+                return _instances;
+            }
+            else
+            {
+                std::vector<Window *> activeWindows = {};
+                for (auto w : _instances)
+                {
+                    if (w->GetState())
+                        activeWindows.push_back(w);
+                }
+                return activeWindows;
+            }
         }
 
         Window *SetIcon(const char *path)
@@ -257,17 +317,28 @@ namespace DNG
 
         void Update()
         {
-            if (flag_hasCustomCursor)
+            SDL_GetWindowPosition(_pointer, &_position.x, &_position.y);
+            if (SDL_GetWindowFlags(_pointer) & SDL_WINDOW_INPUT_FOCUS)
             {
-                float x, y;
-                SDL_GetMouseState(&x, &y);
-                SDL_FRect r;
-                r.w = _cursorSize.x * _cursorScale.x;
-                r.h = _cursorSize.y * _cursorScale.y;
-                r.x = (x - ((r.w / 2) * _renderer.scale.x)) / _renderer.scale.x;
-                r.y = (y - ((r.h / 2) * _renderer.scale.x)) / _renderer.scale.y;
-                SDL_RenderTexture(_renderer, _cursor, NULL, &r);
+                if (flag_hasCustomCursor)
+                {
+                    SDL_HideCursor();
+                    float x, y;
+                    // SDL_GetMouseState(&x, &y);
+                    SDL_GetGlobalMouseState(&x, &y);
+                    SDL_FRect r;
+                    r.w = _cursorSize.x * _cursorScale.x;
+                    r.h = _cursorSize.y * _cursorScale.y;
+                    r.x = ((x - ((r.w / 2) * _renderer.scale.x)) / _renderer.scale.x) - _position.x;
+                    r.y = ((y - ((r.h / 2) * _renderer.scale.x)) / _renderer.scale.y) - _position.y;
+                    SDL_RenderTexture(_renderer, _cursor, NULL, &r);
+                }
+                else
+                {
+                    SDL_ShowCursor();
+                }
             }
+
             SDL_SetRenderTarget(_renderer, NULL);
             SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 0);
             // SDL_SetRenderScale(renderer, 1, 1);
@@ -280,12 +351,9 @@ namespace DNG
         {
             for (auto w : _instances)
             {
-                w->Update();
+                if (w->GetState())
+                    w->Update();
             }
-        }
-        static std::vector<Window *> GetAllWindows()
-        {
-            return _instances;
         }
     };
 

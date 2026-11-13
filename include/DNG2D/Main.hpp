@@ -34,10 +34,13 @@
 namespace DNG
 {
 
-
-    inline static bool GAMESTATE = false;
+    inline static bool gameState = false;
     inline static Timer globalTimer;
-    
+
+    void CloseProgram()
+    {
+        gameState = false;
+    }
 
     bool Init(const char *appname = "c++ project", const char *appversion = "0.0.0", const char *appidentifier = "com.name.Dngine")
     {
@@ -66,7 +69,7 @@ namespace DNG
         {
             Console::LogLoadEnd(true, "engine started!");
         }
-        GAMESTATE = true;
+        gameState = true;
         return true;
     }
 
@@ -78,10 +81,22 @@ namespace DNG
             switch (e.type)
             {
             case SDL_EVENT_QUIT:
-                GAMESTATE = false;
+                CloseProgram();
                 break;
             case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                GAMESTATE = false;
+                if (Window::GetAllWindows().size() == 1)
+                {
+                    CloseProgram();
+                }
+                for (auto window : Window::GetAllWindows())
+                {
+                    if (SDL_GetWindowID(window->GetPointer()) == e.window.windowID)
+                    {
+                        window->Hide();
+                        break;
+                    }
+                }
+
                 break;
             default:
                 break;
@@ -98,7 +113,7 @@ namespace DNG
         Dingus::UpdateAll();
         Action::UpdateAll();
         Window::UpdateAll();
-        return GAMESTATE;
+        return gameState;
     }
 
     void Shutdown()

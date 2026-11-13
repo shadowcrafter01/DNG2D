@@ -89,6 +89,8 @@ void MouseLeftUp()
 
 void MouseRight()
 {
+    //DNG::Window *newWindow = new DNG::Window();
+    window->Hide();
 }
 
 void MoveUp()

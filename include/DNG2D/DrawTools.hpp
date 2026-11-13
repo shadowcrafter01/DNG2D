@@ -60,6 +60,11 @@ namespace DNG
     public:
         static void DrawTexture(Camera *camera, Texture *texture, Vector2<float> position, Vector2<float> size = Vector2<float>(1.0f, 1.0f), float angle = 0, ColorRGBA color = ColorRGBA(255, 255, 255, 255))
         {
+            // gotta make sure the window still exists somehow
+            if (camera->GetWindow())
+            {
+                
+            }
 
             Vector2<float> pos = projectToCamera(camera, position);
             SDL_FRect r;

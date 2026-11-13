@@ -46,6 +46,10 @@ namespace DNG
             Console::LogLoadEnd(true);
             _state = true;
         }
+        void Destroy()
+        {
+            delete this;
+        }
 
         Window *GetWindow()
         {
